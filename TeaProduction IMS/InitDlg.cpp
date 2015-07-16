@@ -355,6 +355,8 @@ BOOL InitDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
+	//测试
+
 
 
 
