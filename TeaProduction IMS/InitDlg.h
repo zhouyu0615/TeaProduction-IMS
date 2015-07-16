@@ -16,7 +16,7 @@ public:
 // 对话框数据
 	enum { IDD = IDD_INITDLG };
 
-	int id_init;    //标识当前正在添加的内容，1添加用户；2生产线；3模块；4设备；5PLC//
+	int id_init;    //标识当前正在添加的内容，1添加用户；2生产线；3模块；4设备；5PLC;6摄像头//
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -35,12 +35,13 @@ public:
 	afx_msg void OnBnClickedBtInitadd();
 
 
-	//添加用于存储用户列表、生产线列表、模块、设备、PLC列表的容器//
+	//添加用于存储用户列表、生产线列表、模块、设备、PLC、摄像头列表的容器//
 	std::vector<CString> Vuser;     
 	std::vector<CString> Vline;
 	std::vector<CString> Vmudole;
 	std::vector<CString> Vdevice;
 	std::vector<CString> Vplc;
+	std::vector<CString> Vcamera;
 
 	CListCtrl m_list_init;  //列表控件的关联变量//
 	afx_msg void OnBnClickedBtFinish();
