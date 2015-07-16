@@ -214,6 +214,7 @@ void LoginDlg::GetInitPara()
    maindlg.Vmudole = initdlg.Vmudole;
    maindlg.Vplc = initdlg.Vplc;
    maindlg.Vdevice = initdlg.Vdevice;
+   maindlg.Vcamera = initdlg.Vcamera;
 }
 
 LRESULT LoginDlg::PopInitDlg(WPARAM wParam, LPARAM lParam)  //“弹出初始化对话框”的消息响应函数//
@@ -224,7 +225,7 @@ LRESULT LoginDlg::PopInitDlg(WPARAM wParam, LPARAM lParam)  //“弹出初始化对话框
 	     AfxGetMainWnd()->PostMessage(WM_CLOSE, 0, 0);
       }
    GetInitPara();             //传递新修改后的初始化参数//
-   int a = 1; //zheshige ceshi
+   
     
    return true;
 }
