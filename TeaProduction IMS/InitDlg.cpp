@@ -75,6 +75,9 @@ void InitDlg::OnPaint()
     int nCount = pmyHeaderCtrl->GetItemCount();
 	for(int i=nCount-1;i>=0;i--)
 	    m_list_init.DeleteColumn(i);
+
+	if (!Vuser.empty() && !Vline.empty() && !Vmudole.empty()) //如果已经添加了用户、生产线、模块，则使“添加摄像头”按钮可用//
+		GetDlgItem(IDC_BT_FORMULA)->EnableWindow(TRUE);
 	
 	int temp = 0;
 
@@ -325,6 +328,68 @@ void InitDlg::OnPaint()
 			}
 			break;
 		}
+	case 6:
+		//初始化编辑区//
+		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加摄像头"));
+		GetDlgItem(IDC_STATIC_LIST)->SetWindowText(_T("摄像头列表"));
+		GetDlgItem(IDC_STATIC1)->SetWindowText(_T("所属生产线："));
+		GetDlgItem(IDC_STATIC2)->SetWindowText(_T("所属工艺模块："));
+		GetDlgItem(IDC_STATIC3)->SetWindowText(_T("摄像头名称："));
+		GetDlgItem(IDC_STATIC4)->SetWindowText(_T("端口："));
+		GetDlgItem(IDC_EDIT1)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT2)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_COMBO1)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC4)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT4)->ShowWindow(SW_SHOW);
+
+		if (((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCount()>0)
+		{
+			if (((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCount()>0)    //如果COMBO2已有内容，先清空//
+				((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
+			temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
+			CString str1;
+			((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, str1);//得到COMBO1当前选中条目//
+			for (int i = 0; i<Vmudole.size(); i += 3)			           //对应填写COMBO2内容//
+				if (Vmudole[i] == str1)
+				{
+					((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(Vmudole[i + 1]));
+					((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
+				}
+		}
+		GetDlgItem(IDC_COMBO2)->ShowWindow(SW_SHOW);
+
+		//初始化列表区//
+		m_list_init.InsertColumn(0, _T(""), LVCFMT_CENTER, 0, -1);       //编辑表头//
+		m_list_init.InsertColumn(1, _T("序号"), LVCFMT_CENTER, rect1.Width() / 11, -1);
+		m_list_init.InsertColumn(2, _T("所属生产线"), LVCFMT_CENTER, rect1.Width() / 11 * 3, -1);
+		m_list_init.InsertColumn(3, _T("所属工艺模块"), LVCFMT_CENTER, rect1.Width() / 11 * 3, -1);
+		m_list_init.InsertColumn(4, _T("摄像头名称"), LVCFMT_CENTER, rect1.Width() / 11 * 2, -1);
+		m_list_init.InsertColumn(5, _T("端口"), LVCFMT_CENTER, rect1.Width() / 11 * 2, -1);
+
+		//填写表单内容//
+		temp = Vcamera.size();
+		if (temp == 0)
+			break;
+		else
+		{
+			int a = 0;
+			int b = 0;
+			int c = temp / 4;
+			for (int n = 1; n<c + 1; n++)
+			{
+				CString str;
+				str.Format("%d", n);
+				m_list_init.InsertItem(n - 1, _T(""));
+				m_list_init.SetItemText(n - 1, 1, _T(str));
+			}
+			for (int n = 0; n <= temp - 1; n++)
+			{
+				a = n / 4;
+				b = n % 4 + 2;
+				m_list_init.SetItemText(a, b, _T(Vcamera[n]));
+			}
+			break;
+		}
 		
 	default:
 		AfxMessageBox(_T("系统错误！"));
@@ -354,8 +419,6 @@ BOOL InitDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-
-	//测试
 
 
 
@@ -479,12 +542,13 @@ void InitDlg::OnBnClickedBtAddplc()
 	OnPaint();
 }
 
-
+//“添加摄像头”响应函数//
 void InitDlg::OnBnClickedBtFormula()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	
-	
+	id_init = 6;
+	OnPaint();
 }
 
 
@@ -600,6 +664,26 @@ void InitDlg::OnBnClickedBtInitadd()
 		Vplc.push_back(text2);
 		Vplc.push_back(text3);
 		Vplc.push_back(text4);
+		break;
+
+	case 6:
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->GetLBText(temp, text2);  //将所属工艺模块名称赋值给text2//
+		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
+		GetDlgItem(IDC_EDIT4)->GetWindowText(text4);
+		if (text1.IsEmpty() || text2.IsEmpty() || text3.IsEmpty() || text4.IsEmpty())  //判断录入信息是否完整//
+		{
+			AfxMessageBox(_T("信息不完善，无法添加！"));
+			return;
+		}
+		GetDlgItem(IDC_EDIT3)->SetWindowText(_T("")); //添加成功，清空编辑框//
+		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
+		Vcamera.push_back(text1);         //将添加的信息录入到容器//
+		Vcamera.push_back(text2);
+		Vcamera.push_back(text3);
+		Vcamera.push_back(text4);
 		break;
 
 	default:

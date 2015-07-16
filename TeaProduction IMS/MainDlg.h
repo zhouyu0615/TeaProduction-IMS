@@ -16,12 +16,14 @@ public:
 // 对话框数据
 	enum { IDD = IDD_MAINDLG };
 
-	//添加用于存储用户列表、生产线列表、模块、设备、PLC列表的容器//
+	//添加用于存储用户列表、生产线列表、模块、设备、PLC、摄像头列表的容器//
 	std::vector<CString> Vuser;     
 	std::vector<CString> Vline;
 	std::vector<CString> Vmudole;
 	std::vector<CString> Vdevice;
 	std::vector<CString> Vplc;
+	std::vector<CString> Vcamera;
+
 	//子对话框变量//
 	MainChildDlg1 childdlg1;
 

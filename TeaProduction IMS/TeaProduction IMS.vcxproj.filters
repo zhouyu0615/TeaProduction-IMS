@@ -66,9 +66,6 @@
     <ClInclude Include="MainChildDlg1.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="tbUser.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TeaProduction IMS.cpp">
@@ -89,13 +86,18 @@
     <ClCompile Include="MainChildDlg1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="tbUser.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeaProduction IMS.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\login.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\toolbar1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
