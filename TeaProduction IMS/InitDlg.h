@@ -2,6 +2,9 @@
 
 #include <vector>
 #include "afxcmn.h"
+#include "UserClass.h"
+#include "ProcessModuleClass.h"
+#include "ProductionLineClass.h"
 
 // InitDlg 对话框
 
@@ -45,6 +48,12 @@ public:
 	std::vector<CString> Vplc;
 	std::vector<CString> Vcamera;
 
+
+	std::vector<UserClass> m_vectUser;
+	std::vector<ProductionLineClass> m_vectProductionLine;
+	std::vector<ProcessModuleClass> m_vectProcessModule;
+
+
 	CListCtrl m_list_init;  //列表控件的关联变量//
 	afx_msg void OnBnClickedBtFinish();
 	afx_msg void OnBnClickedButton3();
@@ -57,7 +66,6 @@ public:
 	void ReadUserFromDatabase();
 	void SaveProLineToDatabase();
 	void ReadProLineFromDatabase();
-
 
 
 

@@ -102,6 +102,7 @@
     <None Include="..\toolbar1.bmp" />
     <None Include="C:\Users\Administrator\Desktop\login.bmp" />
     <None Include="C:\Users\Administrator\Desktop\login.png" />
+    <None Include="ClassDiagram.cd" />
     <None Include="ReadMe.txt" />
     <None Include="res\bitmap1.bmp" />
     <None Include="res\bitmap2.bmp" />
@@ -113,18 +114,23 @@
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="MainChildDlg1.h" />
     <ClInclude Include="MainDlg.h" />
+    <ClInclude Include="ProcessModuleClass.h" />
+    <ClInclude Include="ProductionLineClass.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tbProductionLine.h" />
     <ClInclude Include="tbUser.h" />
     <ClInclude Include="TeaProduction IMS.h" />
+    <ClInclude Include="UserClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InitDlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="MainChildDlg1.cpp" />
     <ClCompile Include="MainDlg.cpp" />
+    <ClCompile Include="ProcessModuleClass.cpp" />
+    <ClCompile Include="ProductionLineClass.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -132,6 +138,7 @@
     <ClCompile Include="tbProductionLine.cpp" />
     <ClCompile Include="tbUser.cpp" />
     <ClCompile Include="TeaProduction IMS.cpp" />
+    <ClCompile Include="UserClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeaProduction IMS.rc" />
