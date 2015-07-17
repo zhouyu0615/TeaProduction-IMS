@@ -17,15 +17,15 @@ public:
 	enum { IDD = IDD_MAINDLG };
 
 	//添加用于存储用户列表、生产线列表、模块、设备、PLC、摄像头列表的容器//
-	std::vector<CString> Vuser;     
-	std::vector<CString> Vline;
-	std::vector<CString> Vmudole;
-	std::vector<CString> Vdevice;
-	std::vector<CString> Vplc;
-	std::vector<CString> Vcamera;
+	std::vector<CString> m_vUser;     
+	std::vector<CString> m_vLine;
+	std::vector<CString> m_vModule;
+	std::vector<CString> m_vDevice;
+	std::vector<CString> m_vPlc;
+	std::vector<CString> m_vCamera;
 
 	//子对话框变量//
-	MainChildDlg1 childdlg1;
+	MainChildDlg1 m_ChildDlg1;
 
 	
 protected:

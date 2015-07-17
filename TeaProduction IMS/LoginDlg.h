@@ -32,9 +32,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
-	static bool userright;                 //用户权限标识，0代表操作员，1代表管理员//
-	static bool isinit;                     //系统是否初始化标识符，true表示已初始化，false表示未初始化//
-	MainDlg maindlg;   //主界面//
-	InitDlg initdlg;   //初始化设置界面//
-    void GetInitPara();//将初始化界面设置的参数传递到主界面对话框类//
+	static bool s_bUserRight;                 //用户权限标识，0代表操作员，1代表管理员//
+	static bool s_bIsInit;                     //系统是否初始化标识符，true表示已初始化，false表示未初始化//
+	MainDlg m_maindlg;   //主界面//
+	InitDlg m_initdlg;   //初始化设置界面//
+    void cmGetInitPara();//将初始化界面设置的参数传递到主界面对话框类//
 };
