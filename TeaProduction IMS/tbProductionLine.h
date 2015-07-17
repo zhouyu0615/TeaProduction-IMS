@@ -1,14 +1,14 @@
-// tbUser.h : CtbUser 的声明
+// tbProductionLine.h : CtbProductionLine 的声明
 
 #pragma once
 
-// 代码生成在 2015年7月16日 星期四, 14:57
+// 代码生成在 2015年7月17日 星期五, 10:38
 
-class CtbUser : public CRecordset
+class CtbProductionLine : public CRecordset
 {
 public:
-	CtbUser(CDatabase* pDatabase = NULL);
-	DECLARE_DYNAMIC(CtbUser)
+	CtbProductionLine(CDatabase* pDatabase = NULL);
+	DECLARE_DYNAMIC(CtbProductionLine)
 
 // 字段/参数数据
 
@@ -23,10 +23,10 @@ public:
 	long	m_Id;
 	CTime	m_CreatedDateTime;
 	CTime	m_LastUpdatedDateTime;
-	CStringA	m_UserName;
-	CStringA	m_UserPassword;
-	CStringA	m_UserCode;
-	CStringA	m_Note;
+	CStringA	m_LineName;
+	long	m_UserId;
+	CStringA	m_Capacity;
+	CStringA	m_Description;
 
 // 重写
 	// 向导生成的虚函数重写

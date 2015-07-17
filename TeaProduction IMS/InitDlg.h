@@ -17,6 +17,8 @@ public:
 	enum { IDD = IDD_INITDLG };
 
 	int id_init;    //标识当前正在添加的内容，1添加用户；2生产线；3模块；4设备；5PLC;6摄像头//
+	int m_userId;
+
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -48,4 +50,17 @@ public:
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnSelchangeCombo1();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnStnClickedStatic4();
+
+
+	void SaveUserToDatabase();
+	void ReadUserFromDatabase();
+	void SaveProLineToDatabase();
+	void ReadProLineFromDatabase();
+
+
+
+
+
+
 };

@@ -1,25 +1,25 @@
-// tbUser.h : CtbUser 类的实现
+// tbProductionLine.h : CtbProductionLine 类的实现
 
 
 
-// CtbUser 实现
+// CtbProductionLine 实现
 
-// 代码生成在 2015年7月16日 星期四, 14:57
+// 代码生成在 2015年7月17日 星期五, 10:38
 
 #include "stdafx.h"
-#include "tbUser.h"
-IMPLEMENT_DYNAMIC(CtbUser, CRecordset)
+#include "tbProductionLine.h"
+IMPLEMENT_DYNAMIC(CtbProductionLine, CRecordset)
 
-CtbUser::CtbUser(CDatabase* pdb)
+CtbProductionLine::CtbProductionLine(CDatabase* pdb)
 	: CRecordset(pdb)
 {
 	m_Id = 0;
 	m_CreatedDateTime;
 	m_LastUpdatedDateTime;
-	m_UserName = "";
-	m_UserPassword = "";
-	m_UserCode = "";
-	m_Note = "";
+	m_LineName = "";
+	m_UserId = 0;
+	m_Capacity = "";
+	m_Description = "";
 	m_nFields = 7;
 	m_nDefaultType = dynaset;
 }
@@ -28,17 +28,17 @@ CtbUser::CtbUser(CDatabase* pdb)
 // 信息。请在查看完此连接字符串并找到所有与安全
 // 有关的问题后移除 #error。可能需要将此密码存
 // 储为其他格式或使用其他的用户身份验证。
-CString CtbUser::GetDefaultConnect()
+CString CtbProductionLine::GetDefaultConnect()
 {
 	return _T("DSN=xfcj_SQLSERVER;UID=sa;PWD=123456;APP=Microsoft\x00ae Visual Studio\x00ae 2013;WSID=ZHOUYU-PC");
 }
 
-CString CtbUser::GetDefaultSQL()
+CString CtbProductionLine::GetDefaultSQL()
 {
-	return _T("[dbo].[tbUser]");
+	return _T("[dbo].[tbProductionLine]");
 }
 
-void CtbUser::DoFieldExchange(CFieldExchange* pFX)
+void CtbProductionLine::DoFieldExchange(CFieldExchange* pFX)
 {
 	pFX->SetFieldType(CFieldExchange::outputColumn);
 // RFX_Text() 和 RFX_Int() 这类宏依赖的是
@@ -47,22 +47,22 @@ void CtbUser::DoFieldExchange(CFieldExchange* pFX)
 	RFX_Long(pFX, _T("[Id]"), m_Id);
 	RFX_Date(pFX, _T("[CreatedDateTime]"), m_CreatedDateTime);
 	RFX_Date(pFX, _T("[LastUpdatedDateTime]"), m_LastUpdatedDateTime);
-	RFX_Text(pFX, _T("[UserName]"), m_UserName);
-	RFX_Text(pFX, _T("[UserPassword]"), m_UserPassword);
-	RFX_Text(pFX, _T("[UserCode]"), m_UserCode);
-	RFX_Text(pFX, _T("[Note]"), m_Note);
+	RFX_Text(pFX, _T("[LineName]"), m_LineName);
+	RFX_Long(pFX, _T("[UserId]"), m_UserId);
+	RFX_Text(pFX, _T("[Capacity]"), m_Capacity);
+	RFX_Text(pFX, _T("[Description]"), m_Description);
 
 }
 /////////////////////////////////////////////////////////////////////////////
-// CtbUser 诊断
+// CtbProductionLine 诊断
 
 #ifdef _DEBUG
-void CtbUser::AssertValid() const
+void CtbProductionLine::AssertValid() const
 {
 	CRecordset::AssertValid();
 }
 
-void CtbUser::Dump(CDumpContext& dc) const
+void CtbProductionLine::Dump(CDumpContext& dc) const
 {
 	CRecordset::Dump(dc);
 }
