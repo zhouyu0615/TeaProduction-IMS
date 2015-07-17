@@ -15,8 +15,8 @@
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
-bool LoginDlg::userright = 0;      //初始化全局静态变量:用户权限标识符//
-bool LoginDlg::isinit = false;    //初始化变量//
+bool LoginDlg::s_bUserRight = 0;      //初始化全局静态变量:用户权限标识符//
+bool LoginDlg::s_bIsInit = false;    //初始化变量//
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -168,33 +168,33 @@ void LoginDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
 
-	userright = ((CComboBox*)GetDlgItem(IDC_COMBO_USERRIGHT))->GetCurSel();//将用户权限组合框的当前选择读入userright//
+	s_bUserRight = ((CComboBox*)GetDlgItem(IDC_COMBO_USERRIGHT))->GetCurSel();//将用户权限组合框的当前选择读入userright//
 	
-	if (isinit)
+	if (s_bIsInit)
 	{
 	    ShowWindow(SW_HIDE);                //隐藏登陆界面//
-		if (maindlg.DoModal()==IDCANCEL)     //如果系统已初始化，弹出主界面//
+		if (m_maindlg.DoModal()==IDCANCEL)     //如果系统已初始化，弹出主界面//
 			CDialog::OnOK();   
 		else
 			ShowWindow(SW_SHOW);
 	}
 	else
 	{
-	   if (userright==0)             //系统未初始化，且用户权限为普通操作员//
+	   if (s_bUserRight==0)             //系统未初始化，且用户权限为普通操作员//
 		   {
 			   AfxMessageBox(_T("系统尚未初始化，无法登录，请联系技术员！"));
 	       }
 	   else
 	   {
 		   ShowWindow(SW_HIDE);
-		   if (initdlg.DoModal()==IDCANCEL)      //弹出初始化设置界面//
+		   if (m_initdlg.DoModal()==IDCANCEL)      //弹出初始化设置界面//
 			  CDialog::OnOK();                   //若用户点击了初始化界面的“退出”按钮，则退出程序//
 		   else
 		   {
-			  if(isinit)
+			  if(s_bIsInit)
 			  {
-			      GetInitPara();                       //用户已在初始化界面录入完善的信息，将这些信息传给主界面//
-                  if (maindlg.DoModal()==IDCANCEL)     //如果系统已初始化，弹出主界面//
+			      cmGetInitPara();                       //用户已在初始化界面录入完善的信息，将这些信息传给主界面//
+                  if (m_maindlg.DoModal()==IDCANCEL)     //如果系统已初始化，弹出主界面//
 			          CDialog::OnOK();                 //若用户点击了主界面的“退出”按钮，则退出程序//
 		          else
 					  ShowWindow(SW_SHOW);             //若用户点击了主界面的“注销”，则回到登陆界面//
@@ -207,24 +207,24 @@ void LoginDlg::OnBnClickedOk()
 }
 
 //将初始化界面设置的参数传递到主界面对话框类//
-void LoginDlg::GetInitPara()
+void LoginDlg::cmGetInitPara()
 {
-   maindlg.Vuser = initdlg.Vuser;
-   maindlg.Vline = initdlg.Vline;
-   maindlg.Vmudole = initdlg.Vmudole;
-   maindlg.Vplc = initdlg.Vplc;
-   maindlg.Vdevice = initdlg.Vdevice;
-   maindlg.Vcamera = initdlg.Vcamera;
+   m_maindlg.m_vUser = m_initdlg.m_vUser;
+   m_maindlg.m_vLine = m_initdlg.m_vLine;
+   m_maindlg.m_vModule = m_initdlg.m_vModule;
+   m_maindlg.m_vPlc = m_initdlg.m_vPlc;
+   m_maindlg.m_vDevice = m_initdlg.m_vDevice;
+   m_maindlg.m_vCamera = m_initdlg.m_vCamera;
 }
 
 LRESULT LoginDlg::PopInitDlg(WPARAM wParam, LPARAM lParam)  //“弹出初始化对话框”的消息响应函数//
 {
-   if(initdlg.DoModal()==IDCANCEL)      //弹出初始化对话框//
+   if(m_initdlg.DoModal()==IDCANCEL)      //弹出初始化对话框//
 	 {                                                 //若用户点击了初始化界面的退出按钮，则退出程序//
-		 maindlg.PostMessageA(WM_CLOSE, 0, 0);
+		 m_maindlg.PostMessageA(WM_CLOSE, 0, 0);
 	     AfxGetMainWnd()->PostMessage(WM_CLOSE, 0, 0);
       }
-   GetInitPara();             //传递新修改后的初始化参数//
+   cmGetInitPara();             //传递新修改后的初始化参数//
    
     
    return true;

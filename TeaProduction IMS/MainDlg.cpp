@@ -45,12 +45,12 @@ BOOL MainDlg::OnInitDialog()
 	// TODO:  添加自己的代码
 
 	//初始化子对话框//
-	childdlg1.Create(IDD_MAINCHILDDLG1,this);
+	m_ChildDlg1.Create(IDD_MAINCHILDDLG1,this);
 	CRect rect1;
-	childdlg1.GetClientRect(rect1);
+	m_ChildDlg1.GetClientRect(rect1);
 	CRect rect2(270,150,rect1.right+270,rect1.bottom+150);
-	childdlg1.MoveWindow(rect2);
-	childdlg1.ShowWindow(SW_SHOW);
+	m_ChildDlg1.MoveWindow(rect2);
+	m_ChildDlg1.ShowWindow(SW_SHOW);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	
@@ -60,7 +60,7 @@ BOOL MainDlg::OnInitDialog()
 void MainDlg::OnPopinitdlg()
 {
 	// TODO: 在此添加命令处理程序代码
-	if(LoginDlg::userright == 1)
+	if(LoginDlg::s_bUserRight == 1)
 	{
 	   HWND m_MacHwnd;
 	   CWnd *m_MacCwnd;
@@ -85,26 +85,26 @@ void MainDlg::OnPaint()
     HTREEITEM hSecItem;    //任一二级节点的句柄//
     HTREEITEM hThdItem;    //任一三级节点的句柄//
 	HTREEITEM hFouItem;    //任一四级节点的句柄//
-	hRoot = m_tree.InsertItem(Vuser[0]);       //添加树形控件内容//
+	hRoot = m_tree.InsertItem(m_vUser[0]);       //添加树形控件内容//
 	          
-	for(int nline = 0;nline<Vline.size();nline+=3)             //写入该用户名下的所有生产线//
+	for(int nLine = 0;nLine<m_vLine.size();nLine+=3)             //写入该用户名下的所有生产线//
 	{
-		hFirItem = m_tree.InsertItem((Vline[nline]), NULL, NULL, hRoot, TVI_LAST); 
+		hFirItem = m_tree.InsertItem((m_vLine[nLine]), NULL, NULL, hRoot, TVI_LAST); 
 		hSecItem = m_tree.InsertItem(_T("工艺模块"), NULL, NULL, hFirItem, TVI_LAST);
-		for (int nmudole=0; nmudole<Vmudole.size(); nmudole+=3)               //写入该条生产线对应的工艺模块//
+		for (int nMudole=0; nMudole<m_vModule.size(); nMudole+=3)               //写入该条生产线对应的工艺模块//
 		{
-		    if (Vmudole[nmudole]==Vline[nline])
+		    if (m_vModule[nMudole]==m_vLine[nLine])
 				{
-					hThdItem = m_tree.InsertItem((Vmudole[nmudole+1]), NULL, NULL, hSecItem, TVI_LAST);
-			        for(int ndevice=0; ndevice<Vdevice.size(); ndevice+=4)               //写入该工艺模块底下的所有设备// 
-						if(Vdevice[ndevice]==Vmudole[nmudole] && Vdevice[ndevice+1]==Vmudole[nmudole+1])
-							hFouItem = m_tree.InsertItem((Vdevice[ndevice+2]), NULL, NULL, hThdItem, TVI_LAST);
+					hThdItem = m_tree.InsertItem((m_vModule[nMudole+1]), NULL, NULL, hSecItem, TVI_LAST);
+			        for(int nDevice=0; nDevice<m_vDevice.size(); nDevice+=4)               //写入该工艺模块底下的所有设备// 
+						if(m_vDevice[nDevice]==m_vModule[nMudole] && m_vDevice[nDevice+1]==m_vModule[nMudole+1])
+							hFouItem = m_tree.InsertItem((m_vDevice[nDevice+2]), NULL, NULL, hThdItem, TVI_LAST);
 			    }
 		}
 		hSecItem = m_tree.InsertItem(_T("PLC"), NULL, NULL, hFirItem, TVI_LAST);
-		for (int nplc=0; nplc<Vplc.size(); nplc+=4)           //写入该生产线下的所有PLC//
-			if(Vplc[nplc]==Vline[nline])
-		         hThdItem = m_tree.InsertItem((Vplc[nplc+1]), NULL, NULL, hSecItem, TVI_LAST);
+		for (int nPlc=0; nPlc<m_vPlc.size(); nPlc+=4)           //写入该生产线下的所有PLC//
+			if(m_vPlc[nPlc]==m_vLine[nLine])
+		         hThdItem = m_tree.InsertItem((m_vPlc[nPlc+1]), NULL, NULL, hSecItem, TVI_LAST);
 	}
 	
 	// 不为绘图消息调用 CDialog::OnPaint()
