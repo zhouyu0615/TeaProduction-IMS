@@ -840,7 +840,7 @@ void InitDlg::OnNMRClickListInit(NMHDR *pNMHDR, LRESULT *pResult)
 	CMenu menu, *pSubMenu;
 	menu.LoadMenu(IDR_INITDLG_POP_MENU);
 	pSubMenu = menu.GetSubMenu(0);
-	CPoint point1;  //存储鼠标位置的临时变量//
+	CPoint point1;        //存储鼠标位置的临时变量//
 	GetCursorPos(&point1);//得到光标处//
 	UINT nItem1 = pSubMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RETURNCMD | TPM_TOPALIGN, point1.x, point1.y, GetParent());//确保右键点击在哪菜单出现在哪，并返回所选的菜单项//
 	if (nItem1>0)
