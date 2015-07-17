@@ -50,6 +50,7 @@ BEGIN_MESSAGE_MAP(InitDlg, CDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO1, &InitDlg::OnSelchangeCombo1)
 	ON_BN_CLICKED(IDCANCEL, &InitDlg::OnBnClickedCancel)
 	ON_STN_CLICKED(IDC_STATIC4, &InitDlg::OnStnClickedStatic4)
+	
 END_MESSAGE_MAP()
 
 
@@ -64,10 +65,10 @@ void InitDlg::OnPaint()
 
 	//如果生产线下拉框为空，则填写生产线下拉框//
 	int lcombo1 = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCount();   //获得COMBO1下拉框当前共有的行数//
-	if (!Vline.empty() && lcombo1 < 1)                                  //如果已经添加了生产线信息而又没有填写到下拉框，则导入//
-		for (int k = 0; k < Vline.size(); k += 3)
+	if (!m_vectProductionLine.empty() && lcombo1 < 1)                                  //如果已经添加了生产线信息而又没有填写到下拉框，则导入//
+		for (int k = 0; k < m_vectProductionLine.size(); k++)
 		{
-			((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(Vline[k]));
+			((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(m_vectProductionLine[k].m_strLineName));
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
 		}
 
@@ -83,10 +84,15 @@ void InitDlg::OnPaint()
 	for (int i = nCount - 1; i >= 0; i--)
 		m_list_init.DeleteColumn(i);
 
-	if (!Vuser.empty() && !Vline.empty() && !Vmudole.empty()) //如果已经添加了用户、生产线、模块，则使“添加摄像头”按钮可用//
+	if (!m_vectUser.empty() && !m_vectProductionLine.empty() && !Vmudole.empty()) //如果已经添加了用户、生产线、模块，则使“添加摄像头”按钮可用//
 		GetDlgItem(IDC_BT_FORMULA)->EnableWindow(TRUE);
 
 	int temp = 0;
+
+	LV_ITEM litem;
+	litem.mask = LVIF_TEXT;
+	litem.iSubItem = 0;
+	litem.pszText = _T("");
 
 	switch (id_init){
 	case 1:
@@ -112,7 +118,24 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(4, _T("客户编码"), LVCFMT_CENTER, rect1.Width() / 14 * 2, -1);
 		m_list_init.InsertColumn(5, _T("备注说明"), LVCFMT_CENTER, rect1.Width() / 14 * 5, -1);
 		//填写表单内容//
-		temp = Vuser.size();
+
+	
+		temp = m_vectUser.size();
+		for (int i = 0; i < temp;i++)
+		{
+			litem.iItem = i;
+			CString str;
+			str.Format("%d", i);
+			m_list_init.InsertItem(&litem);
+			m_list_init.SetItemText(i, 1, _T(str));
+			m_list_init.SetItemText(i, 2, _T(m_vectUser[i].m_strUserName));
+			m_list_init.SetItemText(i, 3, _T(m_vectUser[i].m_strUserPasswd));
+			m_list_init.SetItemText(i, 4, _T(m_vectUser[i].m_strUserCode));
+			m_list_init.SetItemText(i, 5, _T(m_vectUser[i].m_strNote));
+		}	
+		break;
+
+/*		temp = Vuser.size();
 		if (temp == 0)
 			break;
 		else
@@ -135,6 +158,7 @@ void InitDlg::OnPaint()
 			}
 			break;
 		}
+*/
 
 	case 2:
 		//初始化编辑区//
@@ -157,7 +181,25 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(3, _T("产能产量"), LVCFMT_CENTER, rect1.Width() / 10 * 2, -1);
 		m_list_init.InsertColumn(4, _T("备注说明"), LVCFMT_CENTER, rect1.Width() / 10 * 3, -1);
 		//填写表单内容//
-		temp = Vline.size();
+
+
+		temp = m_vectProductionLine.size();
+		for (int i = 0; i < temp; i++)
+		{
+			litem.iItem = i;
+			CString str;
+			str.Format("%d", i);
+			m_list_init.InsertItem(&litem);
+			m_list_init.SetItemText(i, 1, _T(str)); //序号
+			m_list_init.SetItemText(i, 2, _T(m_vectProductionLine[i].m_strLineName));
+			m_list_init.SetItemText(i, 3, _T(m_vectProductionLine[i].m_strCapacity));
+			m_list_init.SetItemText(i, 4, _T(m_vectProductionLine[i].m_strDescription));			
+		}
+		break;
+
+
+	
+ /*		temp = Vline.size();
 		if (temp == 0)
 			break;
 		else
@@ -180,6 +222,8 @@ void InitDlg::OnPaint()
 			}
 			break;
 		}
+ */
+
 	case 3:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加工艺模块"));
@@ -202,7 +246,21 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(4, _T("备注说明"), LVCFMT_CENTER, rect1.Width() / 10 * 3, -1);
 
 		//填写表单内容//
-		temp = Vmudole.size();
+		temp = m_vectProcessModule.size();
+		for (int i = 0; i < temp; i++)
+		{
+			litem.iItem = i;
+			CString str;
+			str.Format("%d", i);
+			m_list_init.InsertItem(&litem);
+			m_list_init.SetItemText(i, 1, _T(str)); //序号
+			//m_list_init.SetItemText(i, 2, _T(m_vectProcessModule[i].m_s));
+			m_list_init.SetItemText(i, 3, _T(m_vectProcessModule[i].m_strModuleName));
+			m_list_init.SetItemText(i, 4, _T(m_vectProcessModule[i].m_strDescription));
+		}
+		break;
+
+/*		temp = Vmudole.size();
 		if (temp == 0)
 			break;
 		else
@@ -225,6 +283,7 @@ void InitDlg::OnPaint()
 			}
 			break;
 		}
+*/
 	case 4:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加设备"));
@@ -458,7 +517,7 @@ void InitDlg::OnBnClickedBtAdduser()
 void InitDlg::OnBnClickedBtAddline()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (Vuser.empty())
+	if (m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
@@ -478,12 +537,12 @@ void InitDlg::OnBnClickedBtAddline()
 void InitDlg::OnBnClickedBtAddmodule()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (Vuser.empty())
+	if (m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
 	}
-	if (Vline.empty())
+	if (m_vectProductionLine.empty())
 	{
 		AfxMessageBox(_T("请先添加生产线！"));
 		return;
@@ -503,12 +562,12 @@ void InitDlg::OnBnClickedBtAddmodule()
 void InitDlg::OnBnClickedBtAdddevice()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (Vuser.empty())
+	if (m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
 	}
-	if (Vline.empty())
+	if (m_vectProductionLine.empty())
 	{
 		AfxMessageBox(_T("请先添加生产线！"));
 		return;
@@ -533,12 +592,12 @@ void InitDlg::OnBnClickedBtAdddevice()
 void InitDlg::OnBnClickedBtAddplc()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (Vuser.empty())
+	if (m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
 	}
-	if (Vline.empty())
+	if (m_vectProductionLine.empty())
 	{
 		AfxMessageBox(_T("请先添加生产线！"));
 		return;
@@ -572,7 +631,7 @@ void InitDlg::OnBnClickedBtInitadd()
 	int temp;
 	switch (id_init){
 	case 1:
-		if (!Vuser.empty())            //判断是否已添加过用户
+		if (!m_vectUser.empty())            //判断是否已添加过用户
 		{
 			AfxMessageBox(_T("非法操作，用户已创建！"));
 			return;
@@ -606,9 +665,9 @@ void InitDlg::OnBnClickedBtInitadd()
 		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
 		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
 
-		if (!Vline.empty())                 //检测该生产线名称是否已经存在//
-			for (int q = 0; q < Vline.size(); q += 3)
-				if (text1 == Vline[q])
+		if (!m_vectProductionLine.empty())                 //检测该生产线名称是否已经存在//
+			for (int q = 0; q < m_vectProductionLine.size(); q++)
+				if (text1 == m_vectProductionLine[q].m_strLineName)
 				{
 					AfxMessageBox(_T("非法操作，该生产线名称已存在！"));
 					return;
@@ -720,7 +779,7 @@ void InitDlg::OnBnClickedBtInitadd()
 void InitDlg::OnBnClickedBtFinish()
 {
 	// TODO:
-	if (!Vuser.empty() && !Vline.empty() && !Vplc.empty() && !Vmudole.empty() && !Vdevice.empty())
+	if (!m_vectUser.empty() && !m_vectProductionLine.empty() && !Vplc.empty() && !m_vectProcessModule.empty() && !Vdevice.empty())
 	{
 		LoginDlg::isinit = true;
 		CDialog::OnOK();
@@ -818,6 +877,9 @@ void InitDlg::ReadUserFromDatabase(){
 		e->ReportError();
 	}
 
+	UserClass tempUser;
+
+
 
 	if (!tbUser.IsEOF()){
 		tbUser.MoveFirst();
@@ -826,6 +888,14 @@ void InitDlg::ReadUserFromDatabase(){
 		Vuser.push_back((CString)tbUser.m_UserPassword);
 		Vuser.push_back((CString)tbUser.m_UserCode);
 		Vuser.push_back(tbUser.m_Note);
+
+		tempUser.m_UserId = tbUser.m_Id;
+		tempUser.m_strUserName = tbUser.m_UserName;
+		tempUser.m_strUserPasswd = tbUser.m_UserPassword;
+		tempUser.m_strUserCode = tbUser.m_UserPassword;
+
+		m_vectUser.push_back(tempUser);
+		
 	}
 
 	tbUser.Close();
@@ -898,15 +968,26 @@ void InitDlg::ReadProLineFromDatabase(){
 		e->ReportError();
 	}
 
+	ProductionLineClass tempProductionLine;
 	tbProductionLine.MoveFirst();
 	while (!tbProductionLine.IsEOF()){
 		Vline.push_back((CString)tbProductionLine.m_LineName);
 		Vline.push_back((CString)tbProductionLine.m_Capacity);
 		Vline.push_back((CString)tbProductionLine.m_Description);
+
+		tempProductionLine.m_Id = tbProductionLine.m_Id;
+		tempProductionLine.m_strLineName = tbProductionLine.m_LineName;
+		tempProductionLine.m_strCapacity = tbProductionLine.m_Capacity;
+		tempProductionLine.m_strDescription = tbProductionLine.m_Description;
+		
+		m_vectProductionLine.push_back(tempProductionLine);
 		tbProductionLine.MoveNext();
 	}
 
 	tbProductionLine.Close();
 
 }
+
+
+
 
