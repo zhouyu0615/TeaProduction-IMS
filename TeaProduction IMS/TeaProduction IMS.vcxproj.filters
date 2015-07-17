@@ -69,7 +69,7 @@
     <ClInclude Include="tbUser.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PlcPara.h">
+    <ClInclude Include="tbProductionLine.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,7 +95,7 @@
     <ClCompile Include="tbUser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="PlcPara.cpp">
+    <ClCompile Include="tbProductionLine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
