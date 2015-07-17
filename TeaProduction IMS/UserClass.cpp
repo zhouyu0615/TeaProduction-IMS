@@ -2,6 +2,8 @@
 #include "UserClass.h"
 
 
+
+
 UserClass::UserClass()
 {
 	m_UserId = 0;

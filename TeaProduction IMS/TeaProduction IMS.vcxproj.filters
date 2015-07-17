@@ -82,6 +82,15 @@
     <ClInclude Include="ProcessModuleClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PlcClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VedeoClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TeaProduction IMS.cpp">
@@ -115,6 +124,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ProcessModuleClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlcClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VedeoClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

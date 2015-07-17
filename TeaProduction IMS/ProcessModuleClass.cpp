@@ -10,6 +10,8 @@ ProcessModuleClass::ProcessModuleClass()
 	m_strModuleName = _T("");
 	m_ProcessLineId = 0;
 	m_strDescription = _T("");
+	m_strProcessModuleName = _T("");
+	m_strProductionLineName = _T("");
 }
 
 

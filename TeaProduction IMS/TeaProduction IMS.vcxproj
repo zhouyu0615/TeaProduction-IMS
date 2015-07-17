@@ -110,10 +110,12 @@
     <None Include="res\TeaProductionIMS.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DeviceClass.h" />
     <ClInclude Include="InitDlg.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="MainChildDlg1.h" />
     <ClInclude Include="MainDlg.h" />
+    <ClInclude Include="PlcClass.h" />
     <ClInclude Include="ProcessModuleClass.h" />
     <ClInclude Include="ProductionLineClass.h" />
     <ClInclude Include="Resource.h" />
@@ -123,12 +125,15 @@
     <ClInclude Include="tbUser.h" />
     <ClInclude Include="TeaProduction IMS.h" />
     <ClInclude Include="UserClass.h" />
+    <ClInclude Include="VedeoClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DeviceClass.cpp" />
     <ClCompile Include="InitDlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="MainChildDlg1.cpp" />
     <ClCompile Include="MainDlg.cpp" />
+    <ClCompile Include="PlcClass.cpp" />
     <ClCompile Include="ProcessModuleClass.cpp" />
     <ClCompile Include="ProductionLineClass.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -139,6 +144,7 @@
     <ClCompile Include="tbUser.cpp" />
     <ClCompile Include="TeaProduction IMS.cpp" />
     <ClCompile Include="UserClass.cpp" />
+    <ClCompile Include="VedeoClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeaProduction IMS.rc" />

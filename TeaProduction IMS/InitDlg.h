@@ -5,6 +5,11 @@
 #include "UserClass.h"
 #include "ProcessModuleClass.h"
 #include "ProductionLineClass.h"
+#include "PlcClass.h"
+#include "DeviceClass.h"
+#include "VedeoClass.h"
+
+
 
 // InitDlg 对话框
 
@@ -41,17 +46,24 @@ public:
 
 
 	//添加用于存储用户列表、生产线列表、模块、设备、PLC、摄像头列表的容器//
-	std::vector<CString> Vuser;     
-	std::vector<CString> Vline;
-	std::vector<CString> Vmudole;
-	std::vector<CString> Vdevice;
-	std::vector<CString> Vplc;
-	std::vector<CString> Vcamera;
+	std::vector<CString> m_vUser;     
+	std::vector<CString> m_vLine;
+	std::vector<CString> m_vModule;
+	std::vector<CString> m_vDevice;
+	std::vector<CString> m_vPlc;
+	std::vector<CString> m_vCamera;
+
+
+	   
 
 
 	std::vector<UserClass> m_vectUser;
 	std::vector<ProductionLineClass> m_vectProductionLine;
 	std::vector<ProcessModuleClass> m_vectProcessModule;
+	std::vector<DeviceClass>  m_vectDevice;
+	std::vector<PlcClass>  m_vectPlc;
+	std::vector<VedeoClass> m_vectVideo;
+
 
 
 	CListCtrl m_list_init;  //列表控件的关联变量//
