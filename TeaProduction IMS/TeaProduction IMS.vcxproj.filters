@@ -40,7 +40,6 @@
     <None Include="..\toolbar1.bmp">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TeaProduction IMS.h">
@@ -73,13 +72,16 @@
     <ClInclude Include="tbProductionLine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UserClass.h">
+    <ClInclude Include="PlcPara.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ProductionLineClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ProcessModuleClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UserClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -108,13 +110,16 @@
     <ClCompile Include="tbProductionLine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="UserClass.cpp">
+    <ClCompile Include="PlcPara.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessModuleClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ProductionLineClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessModuleClass.cpp">
+    <ClCompile Include="UserClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
