@@ -8,7 +8,7 @@
 #include "PlcClass.h"
 #include "DeviceClass.h"
 #include "VideoClass.h"
-
+#include  "DataProvider.h"
 
 
 
@@ -28,6 +28,8 @@ public:
 	int id_init;    //标识当前正在添加的内容，1添加用户；2生产线；3模块；4设备；5PLC;6摄像头//
 	int m_userId;
 
+
+	CDataProvider m_dataPorvider;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

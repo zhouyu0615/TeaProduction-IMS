@@ -14,7 +14,7 @@ public:
 	CDataProvider();
 	~CDataProvider();
 
-
+	int m_userId;
 
 	std::vector<UserClass> m_vectUser;
 	std::vector<ProductionLineClass> m_vectProductionLine;
@@ -32,11 +32,11 @@ public:
 
 	void SaveProModuleToDatabase();
 	void ReadProModuleFromDatabase();
-	void ReadDeviceFormDatabase();
+	void ReadDeviceFromDatabase();
 	void SaveDeviceToDatabase();
-	void ReadPlcFormDatabase();
+	void ReadPlcFromDatabase();
 	void SavePlcToDatabase();
-	void ReadVideoFormDatabase();
+	void ReadVideoFromDatabase();
 	void SaveVideoToDatabase();
 
 
