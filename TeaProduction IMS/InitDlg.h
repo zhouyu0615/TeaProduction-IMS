@@ -8,6 +8,7 @@
 #include "PlcClass.h"
 #include "DeviceClass.h"
 #include "VideoClass.h"
+#include "InitPlcParaDlg.h"
 
 
 
@@ -68,6 +69,7 @@ public:
 
 
 	CListCtrl m_list_init;  //列表控件的关联变量//
+	CInitPlcParaDlg m_InitPlcParaDlg;
 	afx_msg void OnBnClickedBtFinish();
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnSelchangeCombo1();
@@ -84,4 +86,5 @@ public:
 
 
 
+	afx_msg void OnBnClickedBtAddplcpara();
 };

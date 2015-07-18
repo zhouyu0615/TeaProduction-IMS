@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(InitDlg, CDialog)
 	ON_BN_CLICKED(IDCANCEL, &InitDlg::OnBnClickedCancel)
 	ON_STN_CLICKED(IDC_STATIC4, &InitDlg::OnStnClickedStatic4)
 
+	ON_BN_CLICKED(IDC_BT_ADDPLCPARA, &InitDlg::OnBnClickedBtAddplcpara)
 END_MESSAGE_MAP()
 
 
@@ -1055,3 +1056,12 @@ void InitDlg::ReadProLineFromDatabase(){
 
 
 
+
+
+void InitDlg::OnBnClickedBtAddplcpara()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	this->ShowWindow(SW_HIDE);
+	m_InitPlcParaDlg.DoModal();
+	this->ShowWindow(SW_SHOW);
+}

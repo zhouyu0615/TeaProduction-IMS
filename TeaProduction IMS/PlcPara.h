@@ -15,5 +15,6 @@ public:
 	CString m_strDevice;    //所属设备名称//
 	bool m_bIsVisible;    //用户是否可见//
 	bool m_bIsConfig;     //是否进入配方//
+	CString m_strNote;    //备注说明//
 };
 
