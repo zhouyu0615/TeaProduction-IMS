@@ -229,7 +229,7 @@ void InitDlg::OnPaint()
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
 			m_list_init.SetItemText(i, 2, _T(m_vectProcessModule[i].m_strProductionLineName));
-			m_list_init.SetItemText(i, 3, _T(m_vectProcessModule[i].m_strModuleName));
+			m_list_init.SetItemText(i, 3, _T(m_vectProcessModule[i].m_strProcessModuleName));
 			m_list_init.SetItemText(i, 4, _T(m_vectProcessModule[i].m_strDescription));
 		}
 		break;
@@ -425,7 +425,7 @@ void InitDlg::OnPaint()
 			CString str1;
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, str1);//得到COMBO1当前选中条目//
 			for (int i = 0; i < m_vectProcessModule.size(); i++)			           //对应填写COMBO2内容//
-				if (m_vectProcessModule[i].m_strProcessModuleName == str1)
+				if (m_vectProcessModule[i].m_strProductionLineName == str1)
 				{
 					((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(m_vectProcessModule[i].m_strProcessModuleName));
 					((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
@@ -745,7 +745,7 @@ void InitDlg::OnBnClickedBtInitadd()
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
 		
 		tempProModule.m_strProductionLineName = text1;
-		tempProModule.m_strModuleName = text2;
+		tempProModule.m_strProcessModuleName = text2;
 		tempProModule.m_strDescription = text3; 
 
 		m_vectProcessModule.push_back(tempProModule);
@@ -805,6 +805,8 @@ void InitDlg::OnBnClickedBtInitadd()
 		tempPlc.m_strPort = text3;
 		tempPlc.m_strDescription = text4;
 
+		m_vectPlc.push_back(tempPlc);
+
 
 		/*		Vplc.push_back(text1);         //将添加的信息录入到容器//
 				Vplc.push_back(text2);
@@ -832,6 +834,8 @@ void InitDlg::OnBnClickedBtInitadd()
 		tempVideo.m_strProcessModuleName = text2;
 		tempVideo.m_strVideoName = text3;
 		tempVideo.m_strPort = text4;
+
+		m_vectVideo.push_back(tempVideo);
 
 
 		/*	Vcamera.push_back(text1);         //将添加的信息录入到容器//

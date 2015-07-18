@@ -112,10 +112,12 @@
   <ItemGroup>
     <ClInclude Include="DeviceClass.h" />
     <ClInclude Include="InitDlg.h" />
+    <ClInclude Include="InitPlcParaDlg.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="MainChildDlg1.h" />
     <ClInclude Include="MainDlg.h" />
     <ClInclude Include="PlcClass.h" />
+    <ClInclude Include="PlcPara.h" />
     <ClInclude Include="ProcessModuleClass.h" />
     <ClInclude Include="ProductionLineClass.h" />
     <ClInclude Include="Resource.h" />
@@ -130,10 +132,12 @@
   <ItemGroup>
     <ClCompile Include="DeviceClass.cpp" />
     <ClCompile Include="InitDlg.cpp" />
+    <ClCompile Include="InitPlcParaDlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="MainChildDlg1.cpp" />
     <ClCompile Include="MainDlg.cpp" />
     <ClCompile Include="PlcClass.cpp" />
+    <ClCompile Include="PlcPara.cpp" />
     <ClCompile Include="ProcessModuleClass.cpp" />
     <ClCompile Include="ProductionLineClass.cpp" />
     <ClCompile Include="stdafx.cpp">

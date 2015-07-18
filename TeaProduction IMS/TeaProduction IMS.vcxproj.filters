@@ -91,6 +91,12 @@
     <ClInclude Include="VideoClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="InitPlcParaDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PlcPara.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TeaProduction IMS.cpp">
@@ -133,6 +139,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="VideoClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InitPlcParaDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlcPara.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
