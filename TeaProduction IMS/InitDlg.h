@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "afxcmn.h"
+#include "InitPlcParaDlg.h"
 
 // InitDlg 对话框
 
@@ -45,6 +46,7 @@ public:
 
 	CListCtrl m_list_init;  //列表控件的关联变量//
 	int m_nItem;            //列表框控件当前选中行的首行序号//
+	CInitPlcParaDlg m_InitPlcParaDlg;      //初始化PLC变量的界面//
 	afx_msg void OnBnClickedBtFinish();
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnSelchangeCombo1();
@@ -52,4 +54,5 @@ public:
 	afx_msg void OnNMClickListInit(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedBtEdit();
 	afx_msg void OnNMRClickListInit(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedBtAddplcpara();
 };

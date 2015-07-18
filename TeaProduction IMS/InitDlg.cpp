@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(InitDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_INIT, &InitDlg::OnNMClickListInit)
 	ON_BN_CLICKED(IDC_BT_EDIT, &InitDlg::OnBnClickedBtEdit)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_INIT, &InitDlg::OnNMRClickListInit)
+	ON_BN_CLICKED(IDC_BT_ADDPLCPARA, &InitDlg::OnBnClickedBtAddplcpara)
 END_MESSAGE_MAP()
 
 
@@ -871,4 +872,11 @@ void InitDlg::OnNMRClickListInit(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 	}
 	*pResult = 0;
+}
+
+//点击“添加PLC变量”按钮的响应函数//
+void InitDlg::OnBnClickedBtAddplcpara()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	m_InitPlcParaDlg.DoModal(); //弹出初始化PLC变量界面//
 }
