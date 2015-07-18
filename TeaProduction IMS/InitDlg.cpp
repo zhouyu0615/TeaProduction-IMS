@@ -526,9 +526,9 @@ BOOL InitDlg::OnInitDialog()
 	OnPaint();
 	
 	ReadProModuleFromDatabase();
-	ReadPlcFormDatabase();
-	ReadDeviceFormDatabase();
-	ReadVideoFormDatabase();
+	ReadPlcFromDatabase();
+	ReadDeviceFromDatabase();
+	ReadVideoFromDatabase();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -1315,7 +1315,7 @@ void InitDlg::ReadProModuleFromDatabase()
 }
 
 
-void InitDlg::ReadDeviceFormDatabase()
+void InitDlg::ReadDeviceFromDatabase()
 {
 	CString strsql;
 	strsql.Format(_T("select * from tbDevice order by Id"));
@@ -1360,7 +1360,7 @@ void InitDlg::ReadDeviceFormDatabase()
 
 
 
-void InitDlg::ReadPlcFormDatabase()
+void InitDlg::ReadPlcFromDatabase()
 {
 	CString strsql;
 	strsql.Format(_T("select * from tbPLc order by Id"));
@@ -1405,7 +1405,7 @@ void InitDlg::ReadPlcFormDatabase()
 
 
 
-void InitDlg::ReadVideoFormDatabase()
+void InitDlg::ReadVideoFromDatabase()
 {
 	CString strsql;
 	strsql.Format(_T("select * from tbVideo order by Id"));

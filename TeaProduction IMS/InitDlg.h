@@ -81,14 +81,12 @@ public:
 
 
 
-
-
 	void SaveProModuleToDatabase();
 	void ReadProModuleFromDatabase();
-	void ReadDeviceFormDatabase();
+	void ReadDeviceFromDatabase();
 	void SaveDeviceToDatabase();
-	void ReadPlcFormDatabase();
+	void ReadPlcFromDatabase();
 	void SavePlcToDatabase();
-	void ReadVideoFormDatabase();
+	void ReadVideoFromDatabase();
 	void SaveVideoToDatabase();
 };
