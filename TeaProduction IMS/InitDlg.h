@@ -54,7 +54,6 @@ public:
 	std::vector<CString> m_vPlc;
 	std::vector<CString> m_vCamera;
 
-
 	   
 
 
@@ -84,4 +83,12 @@ public:
 
 
 
+	void SaveProModuleToDatabase();
+	void ReadProModuleFromDatabase();
+	void ReadDeviceFormDatabase();
+	void SaveDeviceToDatabase();
+	void ReadPlcFormDatabase();
+	void SavePlcToDatabase();
+	void ReadVideoFormDatabase();
+	void SaveVideoToDatabase();
 };

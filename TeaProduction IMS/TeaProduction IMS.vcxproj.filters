@@ -97,6 +97,18 @@
     <ClInclude Include="PlcPara.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="tbProcessModule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tbDevice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tbPLc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tbVideo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TeaProduction IMS.cpp">
@@ -145,6 +157,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="PlcPara.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tbProcessModule.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tbDevice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tbPLc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tbVideo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
