@@ -7,7 +7,8 @@
 #include "ProductionLineClass.h"
 #include "PlcClass.h"
 #include "DeviceClass.h"
-#include "VedeoClass.h"
+#include "VideoClass.h"
+
 
 
 
@@ -62,7 +63,7 @@ public:
 	std::vector<ProcessModuleClass> m_vectProcessModule;
 	std::vector<DeviceClass>  m_vectDevice;
 	std::vector<PlcClass>  m_vectPlc;
-	std::vector<VedeoClass> m_vectVideo;
+	std::vector<VideoClass> m_vectVideo;
 
 
 

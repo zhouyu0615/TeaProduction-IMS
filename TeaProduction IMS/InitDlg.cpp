@@ -198,32 +198,6 @@ void InitDlg::OnPaint()
 		break;
 
 
-
-		/*		temp = Vline.size();
-			   if (temp == 0)
-			   break;
-			   else
-			   {
-			   int a = 0;
-			   int b = 0;
-			   int c = temp / 3;
-			   for (int n = 1; n < c + 1; n++)
-			   {
-			   CString str;
-			   str.Format("%d", n);
-			   m_list_init.InsertItem(n - 1, _T(""));
-			   m_list_init.SetItemText(n - 1, 1, _T(str));
-			   }
-			   for (int n = 0; n <= temp - 1; n++)
-			   {
-			   a = n / 3;
-			   b = n % 3 + 2;
-			   m_list_init.SetItemText(a, b, _T(Vline[n]));
-			   }
-			   break;
-			   }
-			   */
-
 	case 3:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加工艺模块"));
@@ -306,7 +280,7 @@ void InitDlg::OnPaint()
 			CString str1;
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, str1);//得到COMBO1当前选中条目//
 			for (int i = 0; i < m_vectProcessModule.size(); i++)			           //对应填写COMBO2内容//
-				if (m_vectProcessModule[i].m_strProcessModuleName == str1)
+				if (m_vectProcessModule[i].m_strProductionLineName == str1)
 				{
 					((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(m_vectProcessModule[i].m_strProcessModuleName));
 					((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
@@ -325,10 +299,21 @@ void InitDlg::OnPaint()
 
 
 		//填写表单内容//
-
-
-
+		temp = m_vectDevice.size();
+		for (int i = 0; i < temp; i++)
+		{
+			litem.iItem = i;
+			CString str;
+			str.Format("%d", i);
+			m_list_init.InsertItem(&litem);
+			m_list_init.SetItemText(i, 1, _T(str)); //序号
+			m_list_init.SetItemText(i, 2, _T(m_vectDevice[i].m_strProductionLineName));
+			m_list_init.SetItemText(i, 3, _T(m_vectDevice[i].m_strProcessModuleName));
+			m_list_init.SetItemText(i, 4, _T(m_vectDevice[i].m_strDeviceName));
+			m_list_init.SetItemText(i, 5, _T(m_vectDevice[i].m_strDeviceType));
+		}
 		break;
+
 		/*		temp = Vdevice.size();
 				if (temp == 0)
 				break;
@@ -377,6 +362,22 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(5, _T("备注说明"), LVCFMT_CENTER, rect1.Width() / 11 * 2, -1);
 
 		//填写表单内容//
+		temp = m_vectPlc.size();
+		for (int i = 0; i < temp; i++)
+		{
+			litem.iItem = i;
+			CString str;
+			str.Format("%d", i);
+			m_list_init.InsertItem(&litem);
+			m_list_init.SetItemText(i, 1, _T(str)); //序号
+			m_list_init.SetItemText(i, 2, _T(m_vectPlc[i].m_strProductionLineName));
+			m_list_init.SetItemText(i, 3, _T(m_vectPlc[i].m_strPlcName));
+			m_list_init.SetItemText(i, 4, _T(m_vectPlc[i].m_strPort));
+			m_list_init.SetItemText(i, 5, _T(m_vectPlc[i].m_strDescription));
+		}
+		break;
+
+
 		/*		temp = Vplc.size();
 				if (temp == 0)
 				break;
@@ -441,6 +442,23 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(5, _T("端口"), LVCFMT_CENTER, rect1.Width() / 11 * 2, -1);
 
 		//填写表单内容//
+		temp = m_vectVideo.size();
+		for (int i = 0; i < temp; i++)
+		{
+			litem.iItem = i;
+			CString str;
+			str.Format("%d", i);
+			m_list_init.InsertItem(&litem);
+			m_list_init.SetItemText(i, 1, _T(str)); //序号
+			m_list_init.SetItemText(i, 2, _T(m_vectVideo[i].m_strProductionLineName));
+			m_list_init.SetItemText(i, 3, _T(m_vectVideo[i].m_strProcessModuleName));
+			m_list_init.SetItemText(i, 4, _T(m_vectVideo[i].m_strVideoName));
+			m_list_init.SetItemText(i, 5, _T(m_vectVideo[i].m_strPort));
+		}
+		break;
+
+
+
 		/*		temp = Vcamera.size();
 				if (temp == 0)
 				break;
@@ -524,7 +542,6 @@ void InitDlg::OnBnClickedBtAdduser()
 
 void InitDlg::OnBnClickedBtAddline()
 {
-	// TODO: 在此添加控件通知处理程序代码
 	if (m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
@@ -544,7 +561,6 @@ void InitDlg::OnBnClickedBtAddline()
 
 void InitDlg::OnBnClickedBtAddmodule()
 {
-	// TODO: 在此添加控件通知处理程序代码
 	if (m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
@@ -599,7 +615,6 @@ void InitDlg::OnBnClickedBtAdddevice()
 
 void InitDlg::OnBnClickedBtAddplc()
 {
-	// TODO: 在此添加控件通知处理程序代码
 	if (m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
@@ -640,6 +655,11 @@ void InitDlg::OnBnClickedBtInitadd()
 
 	UserClass tempUser;
 	ProductionLineClass tempProLine;
+	ProcessModuleClass tempProModule;
+	DeviceClass tempDevice;
+	PlcClass tempPlc;
+	VideoClass tempVideo;
+
 
 	switch (id_init){
 	case 1:
@@ -661,7 +681,7 @@ void InitDlg::OnBnClickedBtInitadd()
 		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
 		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
-		
+
 		tempUser.m_strUserName = text1;
 		tempUser.m_strUserPasswd = text2;
 		tempUser.m_strUserCode = text3;
@@ -670,14 +690,6 @@ void InitDlg::OnBnClickedBtInitadd()
 		m_vectUser.push_back(tempUser);
 
 		SaveUserToDatabase();
-
-/*		Vuser.push_back(text1);
-		Vuser.push_back(text2);
-		Vuser.push_back(text3);
-		Vuser.push_back(text4);
-
-*/
-
 
 
 
@@ -704,13 +716,13 @@ void InitDlg::OnBnClickedBtInitadd()
 		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
 
-		
+
 		tempProLine.m_strLineName = text1;
 		tempProLine.m_strCapacity = text2;
 		tempProLine.m_strDescription = text3;
 
 		m_vectProductionLine.push_back(tempProLine);
-	
+
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(text1));//将添加的生产线录入到COMBO1//
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
 
@@ -731,14 +743,18 @@ void InitDlg::OnBnClickedBtInitadd()
 		}
 		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
+		
+		tempProModule.m_strProductionLineName = text1;
+		tempProModule.m_strModuleName = text2;
+		tempProModule.m_strDescription = text3; 
+
+		m_vectProcessModule.push_back(tempProModule);
 
 
-
-
-/*		Vmudole.push_back(text1);   //将录入的信息写入对应容器//
-		Vmudole.push_back(text2);
-		Vmudole.push_back(text3);
-*/
+		/*		Vmudole.push_back(text1);   //将录入的信息写入对应容器//
+				Vmudole.push_back(text2);
+				Vmudole.push_back(text3);
+				*/
 		break;
 	case 4:
 		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
@@ -754,6 +770,15 @@ void InitDlg::OnBnClickedBtInitadd()
 		}
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T("")); //添加成功，清空编辑框//
 		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
+
+		tempDevice.m_strProductionLineName = text1;
+		tempDevice.m_strProcessModuleName = text2;
+		tempDevice.m_strDeviceName = text3;
+		tempDevice.m_strDeviceType = text4;
+
+		m_vectDevice.push_back(tempDevice);
+
+
 		/*		Vdevice.push_back(text1);         //将添加的信息录入到容器//
 				Vdevice.push_back(text2);
 				Vdevice.push_back(text3);
@@ -774,6 +799,12 @@ void InitDlg::OnBnClickedBtInitadd()
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T("")); //添加成功，清空编辑框//
 		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
 		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
+
+		tempPlc.m_strProductionLineName = text1;
+		tempPlc.m_strPlcName = text2;
+		tempPlc.m_strPort = text3;
+		tempPlc.m_strDescription = text4;
+
 
 		/*		Vplc.push_back(text1);         //将添加的信息录入到容器//
 				Vplc.push_back(text2);
@@ -796,6 +827,13 @@ void InitDlg::OnBnClickedBtInitadd()
 		}
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T("")); //添加成功，清空编辑框//
 		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
+
+		tempVideo.m_strProductionLineName = text1;
+		tempVideo.m_strProcessModuleName = text2;
+		tempVideo.m_strVideoName = text3;
+		tempVideo.m_strPort = text4;
+
+
 		/*	Vcamera.push_back(text1);         //将添加的信息录入到容器//
 			Vcamera.push_back(text2);
 			Vcamera.push_back(text3);
@@ -912,17 +950,17 @@ void InitDlg::ReadUserFromDatabase(){
 	}
 
 	UserClass tempUser;
-
-	if (!tbUser.IsEOF()){
-		tbUser.MoveFirst();
+	tbUser.MoveFirst();
+	while (!tbUser.IsEOF()){
 		m_userId = tbUser.m_Id; //获取类成员变量 唯一的 用户ID
-
 		tempUser.m_UserId = tbUser.m_Id;
 		tempUser.m_strUserName = tbUser.m_UserName;
 		tempUser.m_strUserPasswd = tbUser.m_UserPassword;
-		tempUser.m_strUserCode = tbUser.m_UserPassword;
-
+		tempUser.m_strUserCode = tbUser.m_UserCode;
+		tempUser.m_strNote = tbUser.m_Note;
 		m_vectUser.push_back(tempUser);
+
+		tbUser.MoveNext();
 
 	}
 

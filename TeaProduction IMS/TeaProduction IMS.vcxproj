@@ -125,7 +125,7 @@
     <ClInclude Include="tbUser.h" />
     <ClInclude Include="TeaProduction IMS.h" />
     <ClInclude Include="UserClass.h" />
-    <ClInclude Include="VedeoClass.h" />
+    <ClInclude Include="VideoClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DeviceClass.cpp" />
@@ -144,7 +144,7 @@
     <ClCompile Include="tbUser.cpp" />
     <ClCompile Include="TeaProduction IMS.cpp" />
     <ClCompile Include="UserClass.cpp" />
-    <ClCompile Include="VedeoClass.cpp" />
+    <ClCompile Include="VideoClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TeaProduction IMS.rc" />

@@ -88,7 +88,7 @@
     <ClInclude Include="DeviceClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="VedeoClass.h">
+    <ClInclude Include="VideoClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -132,7 +132,7 @@
     <ClCompile Include="DeviceClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="VedeoClass.cpp">
+    <ClCompile Include="VideoClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
