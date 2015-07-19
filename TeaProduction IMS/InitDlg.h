@@ -22,13 +22,22 @@ public:
 	InitDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~InitDlg();
 
+	static const int USER_DATA_EDIT = 1;
+	static const int PRODUCTION_LINE_DATA_EDIT = 2;
+	static const int MODULE_DATA_EDIT = 3;
+	static const int DEVICE_DATA_EDIT = 4;
+	static const int PLC_DATA_EDIT = 5;
+	static const int VIDEO_DATA_EDIT = 6;
+
+
+
 // 对话框数据
 	enum { IDD = IDD_INITDLG };
 
 	int id_init;    //标识当前正在添加的内容，1添加用户；2生产线；3模块；4设备；5PLC;6摄像头//
 	int m_userId;
 
-
+	int m_nItem;            //列表框控件当前选中行的首行序号//
 	CDataProvider m_dataPorvider;
 
 protected:
@@ -56,16 +65,9 @@ public:
 	std::vector<CString> m_vPlc;
 	std::vector<CString> m_vCamera;
 
-	   
+   
 
-
-	std::vector<UserClass> m_vectUser;
-	std::vector<ProductionLineClass> m_vectProductionLine;
-	std::vector<ProcessModuleClass> m_vectProcessModule;
-	std::vector<DeviceClass>  m_vectDevice;
-	std::vector<PlcClass>  m_vectPlc;
-	std::vector<VideoClass> m_vectVideo;
-
+	
 
 
 	CListCtrl m_list_init;  //列表控件的关联变量//
@@ -75,20 +77,10 @@ public:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnStnClickedStatic4();
 
-
-	void SaveUserToDatabase();
-	void ReadUserFromDatabase();
-	void SaveProLineToDatabase();
-	void ReadProLineFromDatabase();
+	
 
 
-
-	void SaveProModuleToDatabase();
-	void ReadProModuleFromDatabase();
-	void ReadDeviceFromDatabase();
-	void SaveDeviceToDatabase();
-	void ReadPlcFromDatabase();
-	void SavePlcToDatabase();
-	void ReadVideoFromDatabase();
-	void SaveVideoToDatabase();
+	afx_msg void OnNMClickListInit(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMRClickListInit(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedBtEdit();
 };

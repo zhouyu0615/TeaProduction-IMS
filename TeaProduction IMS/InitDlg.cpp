@@ -16,6 +16,8 @@
 
 
 
+
+
 // InitDlg 对话框
 
 IMPLEMENT_DYNAMIC(InitDlg, CDialog)
@@ -24,7 +26,6 @@ InitDlg::InitDlg(CWnd* pParent /*=NULL*/)
 : CDialog(InitDlg::IDD, pParent)
 {
 	id_init = 1;
-
 
 
 }
@@ -56,6 +57,9 @@ BEGIN_MESSAGE_MAP(InitDlg, CDialog)
 	ON_BN_CLICKED(IDCANCEL, &InitDlg::OnBnClickedCancel)
 	ON_STN_CLICKED(IDC_STATIC4, &InitDlg::OnStnClickedStatic4)
 
+	ON_NOTIFY(NM_CLICK, IDC_LIST_INIT, &InitDlg::OnNMClickListInit)
+	ON_NOTIFY(NM_RCLICK, IDC_LIST_INIT, &InitDlg::OnNMRClickListInit)
+	ON_BN_CLICKED(IDC_BT_EDIT, &InitDlg::OnBnClickedBtEdit)
 END_MESSAGE_MAP()
 
 
@@ -70,10 +74,10 @@ void InitDlg::OnPaint()
 
 	//如果生产线下拉框为空，则填写生产线下拉框//
 	int lcombo1 = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCount();   //获得COMBO1下拉框当前共有的行数//
-	if (!m_vectProductionLine.empty() && lcombo1 < 1)                                  //如果已经添加了生产线信息而又没有填写到下拉框，则导入//
-		for (int k = 0; k < m_vectProductionLine.size(); k++)
+	if (!m_dataPorvider.m_vectProductionLine.empty() && lcombo1 < 1)                                  //如果已经添加了生产线信息而又没有填写到下拉框，则导入//
+		for (int k = 0; k < m_dataPorvider.m_vectProductionLine.size(); k++)
 		{
-			((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(m_vectProductionLine[k].m_strLineName));
+			((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(m_dataPorvider.m_vectProductionLine[k].m_strLineName));
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
 		}
 
@@ -89,7 +93,9 @@ void InitDlg::OnPaint()
 	for (int i = nCount - 1; i >= 0; i--)
 		m_list_init.DeleteColumn(i);
 
-	if (!m_vectUser.empty() && !m_vectProductionLine.empty() && !m_vectProcessModule.empty()) //如果已经添加了用户、生产线、模块，则使“添加摄像头”按钮可用//
+	if (!m_dataPorvider.m_vectUser.empty()
+		&& !m_dataPorvider.m_vectProductionLine.empty()
+		&& !m_dataPorvider.m_vectProcessModule.empty()) //如果已经添加了用户、生产线、模块，则使“添加摄像头”按钮可用//
 		GetDlgItem(IDC_BT_FORMULA)->EnableWindow(TRUE);
 
 	int temp = 0;
@@ -100,7 +106,7 @@ void InitDlg::OnPaint()
 	litem.pszText = _T("");
 
 	switch (id_init){
-	case 1:
+	case USER_DATA_EDIT:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加用户"));
 		GetDlgItem(IDC_STATIC_LIST)->SetWindowText(_T("用户列表"));
@@ -125,7 +131,7 @@ void InitDlg::OnPaint()
 		//填写表单内容//
 
 
-		temp = m_vectUser.size();
+		temp = m_dataPorvider.m_vectUser.size();
 		for (int i = 0; i < temp; i++)
 		{
 			litem.iItem = i;
@@ -133,39 +139,15 @@ void InitDlg::OnPaint()
 			str.Format("%d", i);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str));
-			m_list_init.SetItemText(i, 2, _T(m_vectUser[i].m_strUserName));
-			m_list_init.SetItemText(i, 3, _T(m_vectUser[i].m_strUserPasswd));
-			m_list_init.SetItemText(i, 4, _T(m_vectUser[i].m_strUserCode));
-			m_list_init.SetItemText(i, 5, _T(m_vectUser[i].m_strNote));
+			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectUser[i].m_strUserName));
+			m_list_init.SetItemText(i, 3, _T(m_dataPorvider.m_vectUser[i].m_strUserPasswd));
+			m_list_init.SetItemText(i, 4, _T(m_dataPorvider.m_vectUser[i].m_strUserCode));
+			m_list_init.SetItemText(i, 5, _T(m_dataPorvider.m_vectUser[i].m_strNote));
 		}
 		break;
 
-		/*		temp = Vuser.size();
-				if (temp == 0)
-				break;
-				else
-				{
-				int a = 0;
-				int b = 0;
-				int c = temp / 4;
-				for (int n = 1; n < c + 1; n++)
-				{
-				CString str;
-				str.Format("%d", n);
-				m_list_init.InsertItem(n - 1, _T(""));
-				m_list_init.SetItemText(n - 1, 1, _T(str));
-				}
-				for (int n = 0; n <= temp - 1; n++)
-				{
-				a = n / 4;
-				b = n % 4 + 2;
-				m_list_init.SetItemText(a, b, _T(Vuser[n]));
-				}
-				break;
-				}
-				*/
 
-	case 2:
+	case PRODUCTION_LINE_DATA_EDIT:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加生产线"));
 		GetDlgItem(IDC_STATIC_LIST)->SetWindowText(_T("生产线列表"));
@@ -188,7 +170,7 @@ void InitDlg::OnPaint()
 		//填写表单内容//
 
 
-		temp = m_vectProductionLine.size();
+		temp = m_dataPorvider.m_vectProductionLine.size();
 		for (int i = 0; i < temp; i++)
 		{
 			litem.iItem = i;
@@ -196,14 +178,14 @@ void InitDlg::OnPaint()
 			str.Format("%d", i);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
-			m_list_init.SetItemText(i, 2, _T(m_vectProductionLine[i].m_strLineName));
-			m_list_init.SetItemText(i, 3, _T(m_vectProductionLine[i].m_strCapacity));
-			m_list_init.SetItemText(i, 4, _T(m_vectProductionLine[i].m_strDescription));
+			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectProductionLine[i].m_strLineName));
+			m_list_init.SetItemText(i, 3, _T(m_dataPorvider.m_vectProductionLine[i].m_strCapacity));
+			m_list_init.SetItemText(i, 4, _T(m_dataPorvider.m_vectProductionLine[i].m_strDescription));
 		}
 		break;
 
 
-	case 3:
+	case MODULE_DATA_EDIT:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加工艺模块"));
 		GetDlgItem(IDC_STATIC_LIST)->SetWindowText(_T("工艺模块列表"));
@@ -225,7 +207,7 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(4, _T("备注说明"), LVCFMT_CENTER, rect1.Width() / 10 * 3, -1);
 
 		//填写表单内容//
-		temp = m_vectProcessModule.size();
+		temp = m_dataPorvider.m_vectProcessModule.size();
 		for (int i = 0; i < temp; i++)
 		{
 			litem.iItem = i;
@@ -233,37 +215,14 @@ void InitDlg::OnPaint()
 			str.Format("%d", i);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
-			m_list_init.SetItemText(i, 2, _T(m_vectProcessModule[i].m_strProductionLineName));
-			m_list_init.SetItemText(i, 3, _T(m_vectProcessModule[i].m_strProcessModuleName));
-			m_list_init.SetItemText(i, 4, _T(m_vectProcessModule[i].m_strDescription));
+			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectProcessModule[i].m_strProductionLineName));
+			m_list_init.SetItemText(i, 3, _T(m_dataPorvider.m_vectProcessModule[i].m_strProcessModuleName));
+			m_list_init.SetItemText(i, 4, _T(m_dataPorvider.m_vectProcessModule[i].m_strDescription));
 		}
 		break;
 
-		/*		temp = Vmudole.size();
-				if (temp == 0)
-				break;
-				else
-				{
-				int a = 0;
-				int b = 0;
-				int c = temp / 3;
-				for (int n = 1; n < c + 1; n++)
-				{
-				CString str;
-				str.Format("%d", n);
-				m_list_init.InsertItem(n - 1, _T(""));
-				m_list_init.SetItemText(n - 1, 1, _T(str));
-				}
-				for (int n = 0; n <= temp - 1; n++)
-				{
-				a = n / 3;
-				b = n % 3 + 2;
-				m_list_init.SetItemText(a, b, _T(Vmudole[n]));
-				}
-				break;
-				}
-				*/
-	case 4:
+
+	case DEVICE_DATA_EDIT:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加设备"));
 		GetDlgItem(IDC_STATIC_LIST)->SetWindowText(_T("设备列表"));
@@ -284,10 +243,10 @@ void InitDlg::OnPaint()
 			temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 			CString str1;
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, str1);//得到COMBO1当前选中条目//
-			for (int i = 0; i < m_vectProcessModule.size(); i++)			           //对应填写COMBO2内容//
-				if (m_vectProcessModule[i].m_strProductionLineName == str1)
+			for (int i = 0; i < m_dataPorvider.m_vectProcessModule.size(); i++)			           //对应填写COMBO2内容//
+				if (m_dataPorvider.m_vectProcessModule[i].m_strProductionLineName == str1)
 				{
-					((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(m_vectProcessModule[i].m_strProcessModuleName));
+					((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(m_dataPorvider.m_vectProcessModule[i].m_strProcessModuleName));
 					((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
 				}
 		}
@@ -304,7 +263,7 @@ void InitDlg::OnPaint()
 
 
 		//填写表单内容//
-		temp = m_vectDevice.size();
+		temp = m_dataPorvider.m_vectDevice.size();
 		for (int i = 0; i < temp; i++)
 		{
 			litem.iItem = i;
@@ -312,38 +271,14 @@ void InitDlg::OnPaint()
 			str.Format("%d", i);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
-			m_list_init.SetItemText(i, 2, _T(m_vectDevice[i].m_strProductionLineName));
-			m_list_init.SetItemText(i, 3, _T(m_vectDevice[i].m_strProcessModuleName));
-			m_list_init.SetItemText(i, 4, _T(m_vectDevice[i].m_strDeviceName));
-			m_list_init.SetItemText(i, 5, _T(m_vectDevice[i].m_strDeviceType));
+			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectDevice[i].m_strProductionLineName));
+			m_list_init.SetItemText(i, 3, _T(m_dataPorvider.m_vectDevice[i].m_strProcessModuleName));
+			m_list_init.SetItemText(i, 4, _T(m_dataPorvider.m_vectDevice[i].m_strDeviceName));
+			m_list_init.SetItemText(i, 5, _T(m_dataPorvider.m_vectDevice[i].m_strDeviceType));
 		}
 		break;
 
-		/*		temp = Vdevice.size();
-				if (temp == 0)
-				break;
-				else
-				{
-				int a = 0;
-				int b = 0;
-				int c = temp / 4;
-				for (int n = 1; n < c + 1; n++)
-				{
-				CString str;
-				str.Format("%d", n);
-				m_list_init.InsertItem(n - 1, _T(""));
-				m_list_init.SetItemText(n - 1, 1, _T(str));
-				}
-				for (int n = 0; n <= temp - 1; n++)
-				{
-				a = n / 4;
-				b = n % 4 + 2;
-				m_list_init.SetItemText(a, b, _T(Vdevice[n]));
-				}
-				break;
-				}
-				*/
-	case 5:
+	case PLC_DATA_EDIT:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加PLC"));
 		GetDlgItem(IDC_STATIC_LIST)->SetWindowText(_T("PLC列表"));
@@ -367,7 +302,7 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(5, _T("备注说明"), LVCFMT_CENTER, rect1.Width() / 11 * 2, -1);
 
 		//填写表单内容//
-		temp = m_vectPlc.size();
+		temp = m_dataPorvider.m_vectPlc.size();
 		for (int i = 0; i < temp; i++)
 		{
 			litem.iItem = i;
@@ -375,40 +310,16 @@ void InitDlg::OnPaint()
 			str.Format("%d", i);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
-			m_list_init.SetItemText(i, 2, _T(m_vectPlc[i].m_strProductionLineName));
-			m_list_init.SetItemText(i, 3, _T(m_vectPlc[i].m_strPlcName));
-			m_list_init.SetItemText(i, 4, _T(m_vectPlc[i].m_strPort));
-			m_list_init.SetItemText(i, 5, _T(m_vectPlc[i].m_strDescription));
+			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectPlc[i].m_strProductionLineName));
+			m_list_init.SetItemText(i, 3, _T(m_dataPorvider.m_vectPlc[i].m_strPlcName));
+			m_list_init.SetItemText(i, 4, _T(m_dataPorvider.m_vectPlc[i].m_strPort));
+			m_list_init.SetItemText(i, 5, _T(m_dataPorvider.m_vectPlc[i].m_strDescription));
 		}
 		break;
 
 
-		/*		temp = Vplc.size();
-				if (temp == 0)
-				break;
-				else
-				{
-				int a = 0;
-				int b = 0;
-				int c = temp / 4;
-				for (int n = 1; n < c + 1; n++)
-				{
-				CString str;
-				str.Format("%d", n);
-				m_list_init.InsertItem(n - 1, _T(""));
-				m_list_init.SetItemText(n - 1, 1, _T(str));
-				}
-				for (int n = 0; n <= temp - 1; n++)
-				{
-				a = n / 4;
-				b = n % 4 + 2;
-				m_list_init.SetItemText(a, b, _T(Vplc[n]));
-				}
-				break;
-				}
 
-				*/
-	case 6:
+	case VIDEO_DATA_EDIT:
 		//初始化编辑区//
 		GetDlgItem(IDC_STATIC_SET)->SetWindowText(_T("添加摄像头"));
 		GetDlgItem(IDC_STATIC_LIST)->SetWindowText(_T("摄像头列表"));
@@ -429,10 +340,10 @@ void InitDlg::OnPaint()
 			temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 			CString str1;
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, str1);//得到COMBO1当前选中条目//
-			for (int i = 0; i < m_vectProcessModule.size(); i++)			           //对应填写COMBO2内容//
-				if (m_vectProcessModule[i].m_strProductionLineName == str1)
+			for (int i = 0; i < m_dataPorvider.m_vectProcessModule.size(); i++)			           //对应填写COMBO2内容//
+				if (m_dataPorvider.m_vectProcessModule[i].m_strProductionLineName == str1)
 				{
-					((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(m_vectProcessModule[i].m_strProcessModuleName));
+					((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(m_dataPorvider.m_vectProcessModule[i].m_strProcessModuleName));
 					((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
 				}
 		}
@@ -447,7 +358,7 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(5, _T("端口"), LVCFMT_CENTER, rect1.Width() / 11 * 2, -1);
 
 		//填写表单内容//
-		temp = m_vectVideo.size();
+		temp = m_dataPorvider.m_vectVideo.size();
 		for (int i = 0; i < temp; i++)
 		{
 			litem.iItem = i;
@@ -455,39 +366,16 @@ void InitDlg::OnPaint()
 			str.Format("%d", i);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
-			m_list_init.SetItemText(i, 2, _T(m_vectVideo[i].m_strProductionLineName));
-			m_list_init.SetItemText(i, 3, _T(m_vectVideo[i].m_strProcessModuleName));
-			m_list_init.SetItemText(i, 4, _T(m_vectVideo[i].m_strVideoName));
-			m_list_init.SetItemText(i, 5, _T(m_vectVideo[i].m_strPort));
+			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectVideo[i].m_strProductionLineName));
+			m_list_init.SetItemText(i, 3, _T(m_dataPorvider.m_vectVideo[i].m_strProcessModuleName));
+			m_list_init.SetItemText(i, 4, _T(m_dataPorvider.m_vectVideo[i].m_strVideoName));
+			m_list_init.SetItemText(i, 5, _T(m_dataPorvider.m_vectVideo[i].m_strPort));
 		}
 		break;
 
 
 
-		/*		temp = Vcamera.size();
-				if (temp == 0)
-				break;
-				else
-				{
-				int a = 0;
-				int b = 0;
-				int c = temp / 4;
-				for (int n = 1; n < c + 1; n++)
-				{
-				CString str;
-				str.Format("%d", n);
-				m_list_init.InsertItem(n - 1, _T(""));
-				m_list_init.SetItemText(n - 1, 1, _T(str));
-				}
-				for (int n = 0; n <= temp - 1; n++)
-				{
-				a = n / 4;
-				b = n % 4 + 2;
-				m_list_init.SetItemText(a, b, _T(Vcamera[n]));
-				}
-				break;
-				}
-				*/
+
 	default:
 		AfxMessageBox(_T("系统错误！"));
 		CDialog::OnCancel();
@@ -518,17 +406,17 @@ BOOL InitDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 
 
-	ReadUserFromDatabase();
-	ReadProLineFromDatabase();
+	m_dataPorvider.ReadUserFromDatabase();
+	m_dataPorvider.ReadProLineFromDatabase();
 
 
 
 	OnPaint();
-	
-	ReadProModuleFromDatabase();
-	ReadPlcFromDatabase();
-	ReadDeviceFromDatabase();
-	ReadVideoFromDatabase();
+
+	m_dataPorvider.ReadProModuleFromDatabase();
+	m_dataPorvider.ReadPlcFromDatabase();
+	m_dataPorvider.ReadDeviceFromDatabase();
+	m_dataPorvider.ReadVideoFromDatabase();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -552,7 +440,7 @@ void InitDlg::OnBnClickedBtAdduser()
 
 void InitDlg::OnBnClickedBtAddline()
 {
-	if (m_vectUser.empty())
+	if (m_dataPorvider.m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
@@ -571,12 +459,12 @@ void InitDlg::OnBnClickedBtAddline()
 
 void InitDlg::OnBnClickedBtAddmodule()
 {
-	if (m_vectUser.empty())
+	if (m_dataPorvider.m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
 	}
-	if (m_vectProductionLine.empty())
+	if (m_dataPorvider.m_vectProductionLine.empty())
 	{
 		AfxMessageBox(_T("请先添加生产线！"));
 		return;
@@ -596,17 +484,17 @@ void InitDlg::OnBnClickedBtAddmodule()
 void InitDlg::OnBnClickedBtAdddevice()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (m_vectUser.empty())
+	if (m_dataPorvider.m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
 	}
-	if (m_vectProductionLine.empty())
+	if (m_dataPorvider.m_vectProductionLine.empty())
 	{
 		AfxMessageBox(_T("请先添加生产线！"));
 		return;
 	}
-	if (m_vectProcessModule.empty())
+	if (m_dataPorvider.m_vectProcessModule.empty())
 	{
 		AfxMessageBox(_T("请先添加工艺模块！"));
 		return;
@@ -625,12 +513,12 @@ void InitDlg::OnBnClickedBtAdddevice()
 
 void InitDlg::OnBnClickedBtAddplc()
 {
-	if (m_vectUser.empty())
+	if (m_dataPorvider.m_vectUser.empty())
 	{
 		AfxMessageBox(_T("尚未创建用户，请先添加用户！"));
 		return;
 	}
-	if (m_vectProductionLine.empty())
+	if (m_dataPorvider.m_vectProductionLine.empty())
 	{
 		AfxMessageBox(_T("请先添加生产线！"));
 		return;
@@ -672,8 +560,8 @@ void InitDlg::OnBnClickedBtInitadd()
 
 
 	switch (id_init){
-	case 1:
-		if (!m_vectUser.empty())            //判断是否已添加过用户
+	case USER_DATA_EDIT:
+		if (!m_dataPorvider.m_vectUser.empty())            //判断是否已添加过用户
 		{
 			AfxMessageBox(_T("非法操作，用户已创建！"));
 			return;
@@ -697,21 +585,19 @@ void InitDlg::OnBnClickedBtInitadd()
 		tempUser.m_strUserCode = text3;
 		tempUser.m_strNote = text4;
 
-		m_vectUser.push_back(tempUser);
+		m_dataPorvider.m_vectUser.push_back(tempUser);
 
-		SaveUserToDatabase();
-
-
+		m_dataPorvider.SaveUserToDatabase();
 
 		break;
-	case 2:
+	case PRODUCTION_LINE_DATA_EDIT:
 		GetDlgItem(IDC_EDIT1)->GetWindowText(text1);
 		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
 		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
 
-		if (!m_vectProductionLine.empty())                 //检测该生产线名称是否已经存在//
-			for (int q = 0; q < m_vectProductionLine.size(); q++)
-				if (text1 == m_vectProductionLine[q].m_strLineName)
+		if (!m_dataPorvider.m_vectProductionLine.empty())                 //检测该生产线名称是否已经存在//
+			for (int q = 0; q < m_dataPorvider.m_vectProductionLine.size(); q++)
+				if (text1 == m_dataPorvider.m_vectProductionLine[q].m_strLineName)
 				{
 					AfxMessageBox(_T("非法操作，该生产线名称已存在！"));
 					return;
@@ -731,17 +617,17 @@ void InitDlg::OnBnClickedBtInitadd()
 		tempProLine.m_strCapacity = text2;
 		tempProLine.m_strDescription = text3;
 
-		m_vectProductionLine.push_back(tempProLine);
+		m_dataPorvider.m_vectProductionLine.push_back(tempProLine);
 
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(text1));//将添加的生产线录入到COMBO1//
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
 
 
-		SaveProLineToDatabase();
+		m_dataPorvider.SaveProLineToDatabase();
 
 
 		break;
-	case 3:
+	case MODULE_DATA_EDIT:
 		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
 		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
@@ -751,23 +637,34 @@ void InitDlg::OnBnClickedBtInitadd()
 			AfxMessageBox(_T("信息不完善，无法添加！"));
 			return;
 		}
+
+         //检测该生产线下工艺模块名称是否已经存在//
+	     for (int i = 0; i < m_dataPorvider.m_vectProcessModule.size(); i++)
+				if (text2 ==m_dataPorvider.m_vectProcessModule[i].m_strProcessModuleName)
+				{
+					if (text1==m_dataPorvider.m_vectProcessModule[i].m_strProductionLineName)
+					{
+						AfxMessageBox(_T("非法操作，该生产线下的同名工艺模块已存在！"));
+						return;
+					}
+					
+				}
+		 
+
 		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
-		
+
 		tempProModule.m_strProductionLineName = text1;
 		tempProModule.m_strProcessModuleName = text2;
-		tempProModule.m_strDescription = text3; 
+		tempProModule.m_strDescription = text3;
 
-		m_vectProcessModule.push_back(tempProModule);
 
-		SaveProModuleToDatabase();
+		m_dataPorvider.m_vectProcessModule.push_back(tempProModule);
 
-		/*		Vmudole.push_back(text1);   //将录入的信息写入对应容器//
-				Vmudole.push_back(text2);
-				Vmudole.push_back(text3);
-				*/
+		m_dataPorvider.SaveProModuleToDatabase();
+
 		break;
-	case 4:
+	case DEVICE_DATA_EDIT:
 		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
 		temp = ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCurSel();
@@ -787,17 +684,12 @@ void InitDlg::OnBnClickedBtInitadd()
 		tempDevice.m_strDeviceName = text3;
 		tempDevice.m_strDeviceType = text4;
 
-		m_vectDevice.push_back(tempDevice);
-		
-		SaveDeviceToDatabase();
+		m_dataPorvider.m_vectDevice.push_back(tempDevice);
 
-		/*		Vdevice.push_back(text1);         //将添加的信息录入到容器//
-				Vdevice.push_back(text2);
-				Vdevice.push_back(text3);
-				Vdevice.push_back(text4);
-				*/
+		m_dataPorvider.SaveDeviceToDatabase();
+
 		break;
-	case 5:
+	case PLC_DATA_EDIT:
 		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
 		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
@@ -817,18 +709,15 @@ void InitDlg::OnBnClickedBtInitadd()
 		tempPlc.m_strPort = text3;
 		tempPlc.m_strDescription = text4;
 
-		m_vectPlc.push_back(tempPlc);
+		//将添加的信息录入到容器//
+		m_dataPorvider.m_vectPlc.push_back(tempPlc);
 
-		SavePlcToDatabase();
+		m_dataPorvider.SavePlcToDatabase();
 
-		/*		Vplc.push_back(text1);         //将添加的信息录入到容器//
-				Vplc.push_back(text2);
-				Vplc.push_back(text3);
-				Vplc.push_back(text4);
-				*/
+	
 		break;
 
-	case 6:
+	case VIDEO_DATA_EDIT:
 		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
 		temp = ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCurSel();
@@ -848,16 +737,11 @@ void InitDlg::OnBnClickedBtInitadd()
 		tempVideo.m_strVideoName = text3;
 		tempVideo.m_strPort = text4;
 
-		m_vectVideo.push_back(tempVideo);
+		//将添加的信息录入到容器//
+		m_dataPorvider.m_vectVideo.push_back(tempVideo);
 
-		SaveVideoToDatabase();
+		m_dataPorvider.SaveVideoToDatabase();
 
-
-		/*	Vcamera.push_back(text1);         //将添加的信息录入到容器//
-			Vcamera.push_back(text2);
-			Vcamera.push_back(text3);
-			Vcamera.push_back(text4);
-			*/
 		break;
 
 	default:
@@ -870,7 +754,7 @@ void InitDlg::OnBnClickedBtInitadd()
 void InitDlg::OnBnClickedBtFinish()
 {
 	// TODO:
-	if (!m_vectUser.empty() && !m_vectProductionLine.empty() && !m_vectPlc.empty() && !m_vectProcessModule.empty() && !m_vectDevice.empty())
+	if (!m_dataPorvider.m_vectUser.empty() && !m_dataPorvider.m_vectProductionLine.empty() && !m_dataPorvider.m_vectPlc.empty() && !m_dataPorvider.m_vectProcessModule.empty() && !m_dataPorvider.m_vectDevice.empty())
 	{
 		LoginDlg::s_bIsInit = true;
 		CDialog::OnOK();
@@ -908,547 +792,393 @@ void InitDlg::OnStnClickedStatic4()
 }
 
 
-void InitDlg::SaveUserToDatabase()
+
+
+
+
+
+
+void InitDlg::OnNMClickListInit(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	CtbUser m_tbUserSet;
-	try{
-		if (m_tbUserSet.IsOpen())
-			m_tbUserSet.Close();
-		if (!m_tbUserSet.Open(CRecordset::dynaset)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-	CString username, userpasswd, usercode, usernote;
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO:  在此添加控件通知处理程序代码
+	*pResult = 0;
 
-	srand(time(NULL));
-	int userId = rand();
+	m_nItem = -1;
 
-
-	username = m_vectUser[0].m_strUserName;
-	userpasswd = m_vectUser[0].m_strUserPasswd;
-	usercode = m_vectUser[0].m_strUserCode;
-	usernote = m_vectUser[0].m_strNote;
-
-	if (m_tbUserSet.CanUpdate()){
-		m_tbUserSet.AddNew();
-
-		CTime time = CTime::GetCurrentTime();
-		m_tbUserSet.m_Id = userId;
-		m_tbUserSet.m_CreatedDateTime = time;
-		m_tbUserSet.m_LastUpdatedDateTime = time;
-		m_tbUserSet.m_UserName = username;
-		m_tbUserSet.m_UserPassword = userpasswd;
-		m_tbUserSet.m_UserCode = usercode;
-		m_tbUserSet.m_Note = usernote;
-		m_tbUserSet.Update();
-
-	}
-	m_tbUserSet.Close();
-}
-
-
-
-
-void InitDlg::SaveProLineToDatabase()
-{
-
-	CtbProductionLine tbProductionLine;
-	try{
-		if (tbProductionLine.IsOpen())
-			tbProductionLine.Close();
-		if (!tbProductionLine.Open(CRecordset::dynaset)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-	CString strlineName, strCapacity, strDescription;
-
-	srand(time(NULL));
-	int lineId = rand();
-	int length = m_vectProductionLine.size();
-
-	strlineName = m_vectProductionLine[length - 1].m_strLineName;
-	strCapacity = m_vectProductionLine[length - 1].m_strCapacity;
-	strDescription = m_vectProductionLine[length - 1].m_strDescription;
-
-	if (tbProductionLine.CanUpdate()){
-		tbProductionLine.AddNew();
-
-		CTime time = CTime::GetCurrentTime();
-		tbProductionLine.m_Id = lineId;
-		tbProductionLine.m_CreatedDateTime = time;
-		tbProductionLine.m_LastUpdatedDateTime = time;
-		tbProductionLine.m_LineName = strlineName;
-		tbProductionLine.m_UserId = m_userId; //唯一用户ID
-		tbProductionLine.m_Capacity = strCapacity;
-		tbProductionLine.m_Description = strDescription;
-		tbProductionLine.Update();
-
-	}
-
-	tbProductionLine.Close();
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-void InitDlg::SaveProModuleToDatabase()
-{
-	CtbProcessModule tbProcessModule;
-	try{
-		if (tbProcessModule.IsOpen())
-			tbProcessModule.Close();
-		if (!tbProcessModule.Open(CRecordset::dynaset)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-	CString strLineName, strModuleName, strDescription;
-
-	srand(time(NULL));
-	int Id = rand();
-	int length = m_vectProcessModule.size();
-
-	strLineName = m_vectProcessModule[length - 1].m_strProductionLineName;
-	strModuleName = m_vectProcessModule[length - 1].m_strProcessModuleName;
-	strDescription = m_vectProcessModule[length - 1].m_strDescription;
-
-	if (tbProcessModule.CanUpdate()){
-		tbProcessModule.AddNew();
-
-		CTime time = CTime::GetCurrentTime();
-		tbProcessModule.m_Id = Id;
-		tbProcessModule.m_CreatedDateTime = time;
-		tbProcessModule.m_LastUpdatedDateTime = time;
-		tbProcessModule.m_ProductionLineName = strLineName;
-		tbProcessModule.m_UserId = m_userId; //唯一用户ID
-		tbProcessModule.m_ModuleName = strModuleName;
-		tbProcessModule.m_Description = strDescription;
-		tbProcessModule.Update();
-
-	}
-
-	tbProcessModule.Close();
-
-
-}
-
-void InitDlg::SaveDeviceToDatabase()
-{
-	CtbDevice tbDevice;
-	try{
-		if (tbDevice.IsOpen())
-			tbDevice.Close();
-		if (!tbDevice.Open(CRecordset::dynaset)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-	CString strLineName, strModuleName, strDeviceName, strDeviceType;
-
-	srand(time(NULL));
-	int Id = rand();
-	int length = m_vectDevice.size();
-
-	strLineName = m_vectDevice[length - 1].m_strProductionLineName;
-	strModuleName = m_vectDevice[length - 1].m_strProcessModuleName;
-	strDeviceName = m_vectDevice[length - 1].m_strDeviceName;
-	strDeviceType = m_vectDevice[length - 1].m_strDeviceType;
-
-	if (tbDevice.CanUpdate()){
-		tbDevice.AddNew();
-
-		CTime time = CTime::GetCurrentTime();
-		tbDevice.m_Id = Id;
-		tbDevice.m_CreatedDateTime = time;
-		tbDevice.m_LastUpdatedDateTime = time;
-		tbDevice.m_ProductionLineName = strLineName;
-		tbDevice.m_ProcessModuleName = strModuleName;
-		tbDevice.m_DeviceName = strDeviceName;
-		tbDevice.m_DeviceType = strDeviceType;
-		tbDevice.Update();
-
-	}
-
-	tbDevice.Close();
-}
-
-
-void InitDlg::SavePlcToDatabase()
-{
-	CtbPLc tbPlc;
-	try{
-		if (tbPlc.IsOpen())
-			tbPlc.Close();
-		if (!tbPlc.Open(CRecordset::dynaset)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-	CString strLineName, strPlcName, strPort, strDescription;
-
-	srand(time(NULL));
-	int Id = rand();
-	int length = m_vectPlc.size();
-
-	strLineName = m_vectPlc[length - 1].m_strProductionLineName;
-	strPlcName = m_vectPlc[length - 1].m_strPlcName;
-	strPort = m_vectPlc[length - 1].m_strPort;
-	strDescription = m_vectPlc[length - 1].m_strDescription;
-
-	if (tbPlc.CanUpdate()){
-		tbPlc.AddNew();
-
-		CTime time = CTime::GetCurrentTime();
-		tbPlc.m_Id = Id;
-		tbPlc.m_CreatedDateTime = time;
-		tbPlc.m_LastUpdatedDateTime = time;
-		tbPlc.m_ProductionLineName = strLineName;
-		tbPlc.m_UserId = m_userId; //唯一用户ID
-		tbPlc.m_PLCName = strPlcName;
-		tbPlc.m_strPort = strPort;
-		tbPlc.m_PortId = atoi(strPort);
-		tbPlc.m_Description = strDescription;
-		tbPlc.Update();
-
-	}
-
-	tbPlc.Close();
-}
-
-
-void InitDlg::SaveVideoToDatabase()
-{
-
-	CtbVideo tbVideo;
-	try{
-		if (tbVideo.IsOpen())
-			tbVideo.Close();
-		if (!tbVideo.Open(CRecordset::dynaset)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-	CString strLineName, strModuleName, strVideoName, strPort;
-
-	srand(time(NULL));
-	int Id = rand();
-	int length = m_vectVideo.size();
-
-	strLineName = m_vectVideo[length - 1].m_strProductionLineName;
-	strModuleName = m_vectVideo[length - 1].m_strProcessModuleName;
-	strVideoName = m_vectVideo[length - 1].m_strVideoName;
-	strPort = m_vectVideo[length - 1].m_strPort;
-
-	if (tbVideo.CanUpdate()){
-		tbVideo.AddNew();
-
-		CTime time = CTime::GetCurrentTime();
-		tbVideo.m_Id = Id;
-		tbVideo.m_CreatedDateTime = time;
-		tbVideo.m_LastUpdatedDateTime = time;
-		tbVideo.m_ProductionLineName = strLineName;
-		tbVideo.m_ProcessModuleName = strModuleName;
-		tbVideo.m_VideoName = strVideoName;
-		tbVideo.m_strPort = strPort;
-		tbVideo.Update();
-
-	}
-
-	tbVideo.Close();
-
-}
-
-
-
-
-void InitDlg::ReadUserFromDatabase(){
-	CString strsql;
-	strsql.Format(_T("select * from tbUser order by Id"));
-
-	CtbUser tbUser;
-	try{
-		if (tbUser.IsOpen())
-			tbUser.Close();
-		if (!tbUser.Open(CRecordset::dynaset, strsql)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-
-	if (tbUser.IsEOF())
+	LPNMITEMACTIVATE lpNMItemActivate = (LPNMITEMACTIVATE)pNMHDR;
+	if (lpNMItemActivate != NULL)
 	{
-		return;
+		m_nItem = lpNMItemActivate->iItem;
 	}
-
-	UserClass tempUser;
-	tbUser.MoveFirst();
-	while (!tbUser.IsEOF()){
-		m_userId = tbUser.m_Id; //获取类成员变量 唯一的 用户ID
-		tempUser.m_UserId = tbUser.m_Id;
-		tempUser.m_strUserName = tbUser.m_UserName;
-		tempUser.m_strUserPasswd = tbUser.m_UserPassword;
-		tempUser.m_strUserCode = tbUser.m_UserCode;
-		tempUser.m_strNote = tbUser.m_Note;
-		m_vectUser.push_back(tempUser);
-
-		tbUser.MoveNext();
-
-	}
-
-	tbUser.Close();
-
-}
-
-
-
-void InitDlg::ReadProLineFromDatabase(){
-	CString strsql;
-	strsql.Format(_T("select * from tbProductionLine order by Id"));
-
-	CtbProductionLine tbProductionLine;
-	try{
-		if (tbProductionLine.IsOpen())
-			tbProductionLine.Close();
-		if (!tbProductionLine.Open(CRecordset::dynaset, strsql)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-
-	if (tbProductionLine.IsEOF())
+	m_list_init.SetItemState(m_nItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+	CString strText1, strText2, strText3, strText4;   //四个临时变量，用于暂存从列标框读取的信息//
+	int nCombo1, nCombo2;     //列表框选中条目，在combo1和2里所对应的位置//
+	switch (id_init)
 	{
-		return;
+	case USER_DATA_EDIT:
+		strText1 = m_list_init.GetItemText(m_nItem, 2);
+		strText2 = m_list_init.GetItemText(m_nItem, 3);
+		strText3 = m_list_init.GetItemText(m_nItem, 4);
+		strText4 = m_list_init.GetItemText(m_nItem, 5);
+		GetDlgItem(IDC_EDIT1)->SetWindowText(strText1);
+		GetDlgItem(IDC_EDIT2)->SetWindowText(strText2);
+		GetDlgItem(IDC_EDIT3)->SetWindowText(strText3);
+		GetDlgItem(IDC_EDIT4)->SetWindowText(strText4);
+		break;
+	case PRODUCTION_LINE_DATA_EDIT:
+		strText1 = m_list_init.GetItemText(m_nItem, 2);
+		strText2 = m_list_init.GetItemText(m_nItem, 3);
+		strText3 = m_list_init.GetItemText(m_nItem, 4);
+		GetDlgItem(IDC_EDIT1)->SetWindowText(strText1);
+		GetDlgItem(IDC_EDIT2)->SetWindowText(strText2);
+		GetDlgItem(IDC_EDIT3)->SetWindowText(strText3);
+		break;
+	case MODULE_DATA_EDIT:
+		strText1 = m_list_init.GetItemText(m_nItem, 2);
+		strText2 = m_list_init.GetItemText(m_nItem, 3);
+		strText3 = m_list_init.GetItemText(m_nItem, 4);
+		GetDlgItem(IDC_EDIT2)->SetWindowText(strText2);
+		GetDlgItem(IDC_EDIT3)->SetWindowText(strText3);
+		nCombo1 = ((CComboBox*)GetDlgItem(IDC_COMBO1))->FindStringExact(0, strText1);
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(nCombo1);
+		break;
+	case DEVICE_DATA_EDIT:
+		strText1 = m_list_init.GetItemText(m_nItem, 2);
+		strText2 = m_list_init.GetItemText(m_nItem, 3);
+		strText3 = m_list_init.GetItemText(m_nItem, 4);
+		strText4 = m_list_init.GetItemText(m_nItem, 5);
+		GetDlgItem(IDC_EDIT3)->SetWindowText(strText3);
+		GetDlgItem(IDC_EDIT4)->SetWindowText(strText4);
+		nCombo1 = ((CComboBox*)GetDlgItem(IDC_COMBO1))->FindStringExact(0, strText1);
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(nCombo1);
+		nCombo2 = ((CComboBox*)GetDlgItem(IDC_COMBO2))->FindStringExact(0, strText2);
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(nCombo2);
+		break;
+	case PLC_DATA_EDIT:
+		strText1 = m_list_init.GetItemText(m_nItem, 2);
+		strText2 = m_list_init.GetItemText(m_nItem, 3);
+		strText3 = m_list_init.GetItemText(m_nItem, 4);
+		strText4 = m_list_init.GetItemText(m_nItem, 5);
+		nCombo1 = ((CComboBox*)GetDlgItem(IDC_COMBO1))->FindStringExact(0, strText1);
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(nCombo1);
+		GetDlgItem(IDC_EDIT3)->SetWindowText(strText3);
+		GetDlgItem(IDC_EDIT4)->SetWindowText(strText4);
+		GetDlgItem(IDC_EDIT2)->SetWindowText(strText2);
+		break;
+	case VIDEO_DATA_EDIT:
+		strText1 = m_list_init.GetItemText(m_nItem, 2);
+		strText2 = m_list_init.GetItemText(m_nItem, 3);
+		strText3 = m_list_init.GetItemText(m_nItem, 4);
+		strText4 = m_list_init.GetItemText(m_nItem, 5);
+		GetDlgItem(IDC_EDIT3)->SetWindowText(strText3);
+		GetDlgItem(IDC_EDIT4)->SetWindowText(strText4);
+		nCombo1 = ((CComboBox*)GetDlgItem(IDC_COMBO1))->FindStringExact(0, strText1);
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(nCombo1);
+		nCombo2 = ((CComboBox*)GetDlgItem(IDC_COMBO2))->FindStringExact(0, strText2);
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(nCombo2);
+		break;
+	default:
+		break;
 	}
 
-	ProductionLineClass tempProductionLine;
-	tbProductionLine.MoveFirst();
-	while (!tbProductionLine.IsEOF()){
-
-		tempProductionLine.m_Id = tbProductionLine.m_Id;
-		tempProductionLine.m_strLineName = tbProductionLine.m_LineName;
-		tempProductionLine.m_strCapacity = tbProductionLine.m_Capacity;
-		tempProductionLine.m_strDescription = tbProductionLine.m_Description;
-
-		m_vectProductionLine.push_back(tempProductionLine);
-		tbProductionLine.MoveNext();
-	}
-
-	tbProductionLine.Close();
 
 }
 
 
-void InitDlg::ReadProModuleFromDatabase()
+void InitDlg::OnNMRClickListInit(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	CString strsql;
-	strsql.Format(_T("select * from tbProcessModule order by Id"));
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO:  在此添加控件通知处理程序代码
+	*pResult = 0;
 
-	CtbProcessModule  tbProcessModule;
-	try{
-		if (tbProcessModule.IsOpen())
-			tbProcessModule.Close();
-		if (!tbProcessModule.Open(CRecordset::dynaset, strsql)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-
-	if (tbProcessModule.IsEOF())
-	{
+	int index = pNMItemActivate->iItem;  //用户右击的行标//
+	if (index == -1)
 		return;
+
+	std::vector<ProductionLineClass>::iterator pProlineIter;
+	std::vector<ProcessModuleClass>::iterator  pModuleIter;
+	std::vector<DeviceClass>::iterator        pDeviceIter;
+	std::vector<PlcClass>::iterator            pPlcIter;
+	std::vector<VideoClass>::iterator		pVideoIter;
+
+	CString tempProLineName, tempModuleName;
+
+	CMenu menu, *pSubMenu;
+	menu.LoadMenu(IDR_INITDLG_POP_MENU);
+	pSubMenu = menu.GetSubMenu(0);
+	CPoint point1;        //存储鼠标位置的临时变量//
+	GetCursorPos(&point1);//得到光标处//
+	UINT nItem1 = pSubMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RETURNCMD | TPM_TOPALIGN, point1.x, point1.y, GetParent());//确保右键点击在哪菜单出现在哪，并返回所选的菜单项//
+	if (nItem1 > 0)
+	{
+		int nResult;
+		int strKey;
+		switch (id_init)
+		{
+		case USER_DATA_EDIT:
+			nResult = MessageBox(_T("该操作将删除用户及其名下所有设备，是否继续当前操作？"), _T("警告"), MB_ICONEXCLAMATION | MB_YESNO);//警告//
+			if (nResult == IDYES)
+			{
+				m_dataPorvider.DeleteDbTable(CDataProvider::tbUser);
+				m_dataPorvider.DeleteDbTable(CDataProvider::tbProductionLine);
+				m_dataPorvider.DeleteDbTable(CDataProvider::tbProcessModule);
+				m_dataPorvider.DeleteDbTable(CDataProvider::tbDevice);
+				m_dataPorvider.DeleteDbTable(CDataProvider::tbPLc);
+				m_dataPorvider.DeleteDbTable(CDataProvider::tbVideo);
+
+				m_dataPorvider.m_vectUser.clear();
+				m_dataPorvider.m_vectProductionLine.clear();
+				m_dataPorvider.m_vectProcessModule.clear();
+				m_dataPorvider.m_vectDevice.clear();
+				m_dataPorvider.m_vectPlc.clear();
+				m_dataPorvider.m_vectVideo.clear();
+				m_dataPorvider.m_vectPlcPara.clear();
+
+				GetDlgItem(IDC_EDIT1)->SetWindowText(_T(""));
+				GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
+				GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
+				GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
+
+				OnPaint();                                //重绘窗口//
+			}
+			break;
+		case PRODUCTION_LINE_DATA_EDIT:
+
+			nResult = MessageBox(_T("该操作将删除该生产线所有相关设备，PLC等设备，是否继续当前操作？"), _T("警告"), MB_ICONEXCLAMATION | MB_YESNO);//警告//
+			if (nResult == IDYES)
+			{
+				//删除数据库中的数据
+				m_dataPorvider.DeleteDbTableItem(CDataProvider::tbProductionLine,
+					m_dataPorvider.m_vectProductionLine[m_nItem].m_Id);
+
+				//删除包含该生产线的工艺模块，设备，PLC,摄像头
+				tempProLineName = m_dataPorvider.m_vectProductionLine[m_nItem].m_strLineName;
+				m_dataPorvider.DeleteModule(tempProLineName);
+				m_dataPorvider.DeleteDevice(tempProLineName);
+				m_dataPorvider.DeletePlc(tempProLineName);
+				m_dataPorvider.DeleteVideo(tempProLineName);
+
+				//删除该容器中的数据		
+				pProlineIter = m_dataPorvider.m_vectProductionLine.begin();
+				m_dataPorvider.m_vectProductionLine.erase(pProlineIter + m_nItem);
+			}
+			   
+			break;
+
+		case MODULE_DATA_EDIT:
+
+			nResult = MessageBox(_T("该操作将删除该工艺模块下所有相关设备等数据，是否继续当前操作？"), _T("警告"), MB_ICONEXCLAMATION | MB_YESNO);//警告//
+			if (nResult == IDYES)
+			{
+				//删除数据库中的数据
+				m_dataPorvider.DeleteDbTableItem(CDataProvider::tbProcessModule,
+					m_dataPorvider.m_vectProcessModule[m_nItem].m_Id);
+
+				//删除包含该生产线的工艺模块，设备，PLC,摄像头
+				tempProLineName = m_dataPorvider.m_vectProcessModule[m_nItem].m_strProductionLineName;
+				tempModuleName = m_dataPorvider.m_vectProcessModule[m_nItem].m_strProcessModuleName;		
+				m_dataPorvider.DeleteDevice(tempProLineName,tempModuleName);
+				m_dataPorvider.DeleteVideo(tempProLineName,tempModuleName);
+
+
+				//删除该容器中的数据		
+				pModuleIter = m_dataPorvider.m_vectProcessModule.begin();
+				m_dataPorvider.m_vectProcessModule.erase(pModuleIter + m_nItem);
+			}
+
+			
+
+
+			break;
+		case DEVICE_DATA_EDIT:
+			m_dataPorvider.DeleteDbTableItem(CDataProvider::tbDevice,
+				m_dataPorvider.m_vectDevice[m_nItem].m_Id);
+
+			pDeviceIter = m_dataPorvider.m_vectDevice.begin();
+			m_dataPorvider.m_vectDevice.erase(pDeviceIter + m_nItem);
+
+
+			break;
+		case PLC_DATA_EDIT:
+			m_dataPorvider.DeleteDbTableItem(CDataProvider::tbPLc,
+				m_dataPorvider.m_vectPlc[m_nItem].m_Id);
+
+			pPlcIter = m_dataPorvider.m_vectPlc.begin();
+			m_dataPorvider.m_vectPlc.erase(pPlcIter + m_nItem);
+
+			break;
+		case VIDEO_DATA_EDIT:
+
+			m_dataPorvider.DeleteDbTableItem(CDataProvider::tbVideo,
+				m_dataPorvider.m_vectVideo[m_nItem].m_Id);
+
+			pVideoIter = m_dataPorvider.m_vectVideo.begin();
+			m_dataPorvider.m_vectVideo.erase(pVideoIter + m_nItem);
+
+			break;
+		default:
+			break;
+		}
+		OnPaint();
 	}
-
-
-	ProcessModuleClass tempModule;
-	tbProcessModule.MoveFirst();
-	while (!tbProcessModule.IsEOF()){
-
-		tempModule.m_Id = tbProcessModule.m_Id;
-		tempModule.m_strProductionLineName = tbProcessModule.m_ProductionLineName;
-		tempModule.m_strProcessModuleName = tbProcessModule.m_ModuleName;
-		tempModule.m_strDescription = tbProcessModule.m_Description;
-
-		m_vectProcessModule.push_back(tempModule);
-		tbProcessModule.MoveNext();
-	}
-
-	tbProcessModule.Close();
-
 }
 
 
-void InitDlg::ReadDeviceFromDatabase()
+void InitDlg::OnBnClickedBtEdit()
 {
-	CString strsql;
-	strsql.Format(_T("select * from tbDevice order by Id"));
+	// TODO:  在此添加控件通知处理程序代码
+	CString text1, text2, text3, text4;
+	int temp;
 
-	CtbDevice  tbDevice;
-	try{
-		if (tbDevice.IsOpen())
-			tbDevice.Close();
-		if (!tbDevice.Open(CRecordset::dynaset, strsql)){
-			AfxMessageBox(_T("打开数据库失败！"));
+	switch (id_init){
+	case USER_DATA_EDIT:		
+		GetDlgItem(IDC_EDIT1)->GetWindowText(text1);
+		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
+		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
+		GetDlgItem(IDC_EDIT4)->GetWindowText(text4);
+		if (text1.IsEmpty() || text2.IsEmpty() || text3.IsEmpty())
+		{
+			AfxMessageBox(_T("信息不完善！"));
 			return;
 		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-	if (tbDevice.IsEOF())
-	{
-		return;
-	}
+
+		m_dataPorvider.m_vectUser[m_nItem].m_strUserName = text1;
+		m_dataPorvider.m_vectUser[m_nItem].m_strUserPasswd = text2;
+		m_dataPorvider.m_vectUser[m_nItem].m_strUserCode = text3;
+		m_dataPorvider.m_vectUser[m_nItem].m_strNote = text4;
+
+		m_dataPorvider.UpdateTableItem(CDataProvider::tbUser, m_dataPorvider.m_vectUser[0].m_UserId);
+
+		break;
+	case PRODUCTION_LINE_DATA_EDIT:
+		GetDlgItem(IDC_EDIT1)->GetWindowText(text1);
+		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
+		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
+		
+		if (text1.IsEmpty() || text2.IsEmpty())
+		{
+			AfxMessageBox(_T("信息不完善，无法添加！"));
+			return;
+		}
+		GetDlgItem(IDC_EDIT1)->SetWindowText(_T(""));
+		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
+		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
+
+
+		m_dataPorvider.m_vectProductionLine[m_nItem].m_strLineName = text1;
+		m_dataPorvider.m_vectProductionLine[m_nItem].m_strCapacity = text2;
+		m_dataPorvider.m_vectProductionLine[m_nItem].m_strDescription = text3;
+
+		m_dataPorvider.UpdateTableItem(CDataProvider::tbProductionLine,
+			m_dataPorvider.m_vectProductionLine[m_nItem].m_Id);
+
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(text1));//将添加的生产线录入到COMBO1//
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
+
+		break;
+	case MODULE_DATA_EDIT:
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
+		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
+		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
+		if (text1.IsEmpty() || text2.IsEmpty())                   //判断所录入工艺模块信息是否完全//
+		{
+			AfxMessageBox(_T("信息不完善，无法添加！"));
+			return;
+		}
+		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
+		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
+
+		m_dataPorvider.m_vectProcessModule[m_nItem].m_strProductionLineName = text1;
+		m_dataPorvider.m_vectProcessModule[m_nItem].m_strProcessModuleName = text2;
+		m_dataPorvider.m_vectProcessModule[m_nItem].m_strDescription = text3;
+
+		m_dataPorvider.UpdateTableItem(CDataProvider::tbProcessModule, 
+			m_dataPorvider.m_vectProcessModule[m_nItem].m_Id);
+
+
+
+		break;
+	case DEVICE_DATA_EDIT:
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->GetLBText(temp, text2);  //将所属工艺模块名称赋值给text2//
+		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
+		GetDlgItem(IDC_EDIT4)->GetWindowText(text4);
+		if (text1.IsEmpty() || text2.IsEmpty() || text3.IsEmpty() || text4.IsEmpty())  //判断录入信息是否完整//
+		{
+			AfxMessageBox(_T("信息不完善，无法添加！"));
+			return;
+		}
+		GetDlgItem(IDC_EDIT3)->SetWindowText(_T("")); //修改成功，清空编辑框//
+		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
+
+		m_dataPorvider.m_vectDevice[m_nItem].m_strProductionLineName = text1;
+		m_dataPorvider.m_vectDevice[m_nItem].m_strProcessModuleName = text2;
+		m_dataPorvider.m_vectDevice[m_nItem].m_strDeviceName = text3;
+		m_dataPorvider.m_vectDevice[m_nItem].m_strDeviceType = text4;
+
+		m_dataPorvider.UpdateTableItem(CDataProvider::tbDevice,
+			m_dataPorvider.m_vectDevice[m_nItem].m_Id);
+
+		break;
+	case PLC_DATA_EDIT:
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
+		GetDlgItem(IDC_EDIT2)->GetWindowText(text2);
+		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
+		GetDlgItem(IDC_EDIT4)->GetWindowText(text4);
+		if (text1.IsEmpty() || text2.IsEmpty() || text3.IsEmpty())  //判断录入信息是否完整//
+		{
+			AfxMessageBox(_T("信息不完善！"));
+			return;
+		}
+		GetDlgItem(IDC_EDIT3)->SetWindowText(_T("")); //添加成功，清空编辑框//
+		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
+		GetDlgItem(IDC_EDIT2)->SetWindowText(_T(""));
+
+		m_dataPorvider.m_vectPlc[m_nItem].m_strProductionLineName = text1;
+		m_dataPorvider.m_vectPlc[m_nItem].m_strPlcName = text2;
+		m_dataPorvider.m_vectPlc[m_nItem].m_strPort = text3;
+		m_dataPorvider.m_vectPlc[m_nItem].m_strDescription = text4;
+
+		m_dataPorvider.UpdateTableItem(CDataProvider::tbPLc, m_dataPorvider.m_vectPlc[m_nItem].m_Id);
 	
+		break;
 
-	DeviceClass tempDevice;
-	tbDevice.MoveFirst();
-	while (!tbDevice.IsEOF()){
-
-		tempDevice.m_Id = tbDevice.m_Id;
-		tempDevice.m_strProductionLineName = tbDevice.m_ProductionLineName;
-		tempDevice.m_strProcessModuleName = tbDevice.m_ProcessModuleName;
-		tempDevice.m_strDeviceName = tbDevice.m_DeviceName;
-		tempDevice.m_strDeviceType = tbDevice.m_DeviceType;
-
-		m_vectDevice.push_back(tempDevice);
-		tbDevice.MoveNext();
-	}
-
-	tbDevice.Close();
-
-}
-
-
-
-
-
-void InitDlg::ReadPlcFromDatabase()
-{
-	CString strsql;
-	strsql.Format(_T("select * from tbPLc order by Id"));
-
-	CtbPLc  tbPlc;
-	try{
-		if (tbPlc.IsOpen())
-			tbPlc.Close();
-		if (!tbPlc.Open(CRecordset::dynaset, strsql)){
-			AfxMessageBox(_T("打开数据库失败！"));
+	case VIDEO_DATA_EDIT:
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, text1);  //将所属生产线名称赋值给text1//
+		temp = ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCurSel();
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->GetLBText(temp, text2);  //将所属工艺模块名称赋值给text2//
+		GetDlgItem(IDC_EDIT3)->GetWindowText(text3);
+		GetDlgItem(IDC_EDIT4)->GetWindowText(text4);
+		if (text1.IsEmpty() || text2.IsEmpty() || text3.IsEmpty() || text4.IsEmpty())  //判断录入信息是否完整//
+		{
+			AfxMessageBox(_T("信息不完善"));
 			return;
 		}
+		GetDlgItem(IDC_EDIT3)->SetWindowText(_T("")); //添加成功，清空编辑框//
+		GetDlgItem(IDC_EDIT4)->SetWindowText(_T(""));
+
+		m_dataPorvider.m_vectVideo[m_nItem].m_strProductionLineName = text1;
+		m_dataPorvider.m_vectVideo[m_nItem].m_strProcessModuleName = text2;
+		m_dataPorvider.m_vectVideo[m_nItem].m_strVideoName = text3;
+		m_dataPorvider.m_vectVideo[m_nItem].m_strPort = text4;
+
+		m_dataPorvider.UpdateTableItem(CDataProvider::tbVideo, 
+			m_dataPorvider.m_vectVideo[m_nItem].m_Id);			
+
+		break;
+
+	default:
+		break;
 	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
+	OnPaint();
 
-	if (tbPlc.IsEOF())
-	{
-		return;
-	}
 
-	PlcClass tempPlc;
-	tbPlc.MoveFirst();
-	while (!tbPlc.IsEOF()){
-
-		tempPlc.m_Id = tbPlc.m_Id;
-		tempPlc.m_strProductionLineName = tbPlc.m_ProductionLineName;
-		tempPlc.m_strPlcName = tbPlc.m_PLCName;
-		tempPlc.m_strPort = tbPlc.m_strPort;
-		tempPlc.m_strDescription = tbPlc.m_Description;
-
-		m_vectPlc.push_back(tempPlc);
-		tbPlc.MoveNext();
-	}
-
-	tbPlc.Close();
 
 
 }
-
-
-
-
-void InitDlg::ReadVideoFromDatabase()
-{
-	CString strsql;
-	strsql.Format(_T("select * from tbVideo order by Id"));
-
-	CtbVideo  tbVideo;
-	try{
-		if (tbVideo.IsOpen())
-			tbVideo.Close();
-		if (!tbVideo.Open(CRecordset::dynaset, strsql)){
-			AfxMessageBox(_T("打开数据库失败！"));
-			return;
-		}
-	}
-	catch (CDBException *e){
-		e->ReportError();
-	}
-
-	if (tbVideo.IsEOF())
-	{
-		return;
-	}
-
-	VideoClass tempVideo;
-	tbVideo.MoveFirst();
-	while (!tbVideo.IsEOF()){
-
-		tempVideo.m_Id = tbVideo.m_Id;
-		tempVideo.m_strProductionLineName = tbVideo.m_ProductionLineName;
-		tempVideo.m_strProcessModuleName = tbVideo.m_ProcessModuleName;
-		tempVideo.m_strPort =  tbVideo.m_strPort;
-		tempVideo.m_strVideoName = tbVideo.m_VideoName;
-
-		m_vectVideo.push_back(tempVideo);
-		tbVideo.MoveNext();
-	}
-
-	tbVideo.Close();
-
-
-}
-
-
-
-
-
-
