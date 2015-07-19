@@ -20,11 +20,12 @@ public:
 	enum { IDD = IDD_INITPLCPARA };
 	std::vector<CPlcPara> m_vPlcPara; //用于存储PLC变量的容器//
 	CPlcPara m_PlcPara;    //用于暂存一条PLC变量记录//
+	int m_nItem;//用于暂存用户单击列表框时鼠标所在的行标//
 
-	std::vector<PlcClass> m_Plc;
-	std::vector<DeviceClass> m_Device;
-	std::vector<ProcessModuleClass> m_Module;
-	std::vector<ProductionLineClass> m_Line;
+	std::vector<PlcClass> m_vPlc;
+	std::vector<DeviceClass> m_vDevice;
+	std::vector<ProcessModuleClass> m_vModule;
+	std::vector<ProductionLineClass> m_vLine;
 	
 
 
@@ -41,4 +42,8 @@ public:
 	afx_msg void OnCbnSelchangeCombo4();
 	afx_msg void OnBnClickedBtAddplcpara();
 	afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedBtEditplcpara();
+	afx_msg void OnBnClickedBtCleareditarea();
+	afx_msg void OnBnClickedBtClearallpara();
 };
