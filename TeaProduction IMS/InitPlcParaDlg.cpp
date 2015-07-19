@@ -89,6 +89,7 @@ CInitPlcParaDlg::CInitPlcParaDlg(CWnd* pParent /*=NULL*/)
 	plcpara.m_strPlc = _T("绿茶一号PLC");
 	plcpara.m_strValueType = _T("Bool");
 	plcpara.m_strNote = _T("启动停止信号");
+	plcpara.m_bIsReadOnly = true;
 	m_vPlcPara.push_back(plcpara);
 
 }
@@ -133,33 +134,19 @@ BOOL CInitPlcParaDlg::OnInitDialog()
 	m_ListInitPlcPara.SetExtendedStyle(m_ListInitPlcPara.GetExtendedStyle() | LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_SINGLESEL | LBS_OWNERDRAWVARIABLE | LVS_SHOWSELALWAYS);
 	m_ListInitPlcPara.InsertColumn(0, _T(""), LVCFMT_CENTER, 0, -1);
 	m_ListInitPlcPara.InsertColumn(1, _T("序号"), LVCFMT_CENTER, rect1.Width() / 25, -1);
-	m_ListInitPlcPara.InsertColumn(2, _T("地址"), LVCFMT_CENTER, rect1.Width() / 25 * 1.8, -1);
+	m_ListInitPlcPara.InsertColumn(2, _T("地址"), LVCFMT_CENTER, rect1.Width() / 25 * 1.6, -1);
 	m_ListInitPlcPara.InsertColumn(3, _T("数据类型"), LVCFMT_CENTER, rect1.Width() / 25 * 1.7, -1);
-	m_ListInitPlcPara.InsertColumn(4, _T("所属生产线"), LVCFMT_CENTER, rect1.Width() / 25* 3.5, -1);
-	m_ListInitPlcPara.InsertColumn(5, _T("所属工艺模块"), LVCFMT_CENTER, rect1.Width() / 25 * 3, -1);
-	m_ListInitPlcPara.InsertColumn(6, _T("所属设备"), LVCFMT_CENTER, rect1.Width() / 25 * 2.9, -1);
-	m_ListInitPlcPara.InsertColumn(7, _T("所属PLC"), LVCFMT_CENTER, rect1.Width() / 25 * 2.9, -1);
-	m_ListInitPlcPara.InsertColumn(8, _T("是否进入配方"), LVCFMT_CENTER, rect1.Width() / 25* 2.3, -1);
-	m_ListInitPlcPara.InsertColumn(9, _T("用户是否可见"), LVCFMT_CENTER, rect1.Width() /25 * 2.3, -1);
-	m_ListInitPlcPara.InsertColumn(10, _T("备注"), LVCFMT_CENTER, rect1.Width() / 25 * 4, -1);
+	m_ListInitPlcPara.InsertColumn(4, _T("读写类型"), LVCFMT_CENTER, rect1.Width() / 25 * 1.7, -1);
+	m_ListInitPlcPara.InsertColumn(5, _T("所属生产线"), LVCFMT_CENTER, rect1.Width() / 25* 3.3, -1);
+	m_ListInitPlcPara.InsertColumn(6, _T("所属工艺模块"), LVCFMT_CENTER, rect1.Width() / 25 * 3, -1);
+	m_ListInitPlcPara.InsertColumn(7, _T("所属设备"), LVCFMT_CENTER, rect1.Width() / 25 * 2.9, -1);
+	m_ListInitPlcPara.InsertColumn(8, _T("所属PLC"), LVCFMT_CENTER, rect1.Width() / 25 * 2.9, -1);
+	m_ListInitPlcPara.InsertColumn(9, _T("是否进入配方"), LVCFMT_CENTER, rect1.Width() / 25* 2.2, -1);
+	m_ListInitPlcPara.InsertColumn(10, _T("用户是否可见"), LVCFMT_CENTER, rect1.Width() /25 * 2.2, -1);
+	m_ListInitPlcPara.InsertColumn(11, _T("备注"), LVCFMT_CENTER, rect1.Width() / 25 * 3, -1);
 
-	//填写地址类型下拉框//
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("I"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("IX"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("IB"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("IW"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("ID"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("Q"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QX"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QB"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QW"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QD"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("M"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MX"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MB"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MW"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MD"));
-	((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
+	
+	//((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常:  OCX 属性页应返回 FALSE
@@ -184,26 +171,50 @@ void CInitPlcParaDlg::OnPaint()
 			m_ListInitPlcPara.SetItemText(n , 1, _T(str4));
 			m_ListInitPlcPara.SetItemText(n, 2, _T(m_vPlcPara[n].m_strAddressType + m_vPlcPara[n].m_strAddressIndex));
 			m_ListInitPlcPara.SetItemText(n, 3, _T(m_vPlcPara[n].m_strValueType));
-			m_ListInitPlcPara.SetItemText(n, 4, _T(m_vPlcPara[n].m_strLine));
-			m_ListInitPlcPara.SetItemText(n, 5, _T(m_vPlcPara[n].m_strModule));
-			m_ListInitPlcPara.SetItemText(n, 6, _T(m_vPlcPara[n].m_strDevice));
-			m_ListInitPlcPara.SetItemText(n, 7, _T(m_vPlcPara[n].m_strPlc));
+			if (m_vPlcPara[n].m_bIsReadOnly)
+				m_ListInitPlcPara.SetItemText(n, 4, _T("只读"));
+			else
+				m_ListInitPlcPara.SetItemText(n, 4, _T("读写"));
+			m_ListInitPlcPara.SetItemText(n, 5, _T(m_vPlcPara[n].m_strLine));
+			m_ListInitPlcPara.SetItemText(n, 6, _T(m_vPlcPara[n].m_strModule));
+			m_ListInitPlcPara.SetItemText(n, 7, _T(m_vPlcPara[n].m_strDevice));
+			m_ListInitPlcPara.SetItemText(n, 8, _T(m_vPlcPara[n].m_strPlc));
 			if (m_vPlcPara[n].m_bIsConfig)
-				m_ListInitPlcPara.SetItemText(n, 8, _T("是")); 
+				m_ListInitPlcPara.SetItemText(n, 9, _T("是")); 
 			else			
-				m_ListInitPlcPara.SetItemText(n, 8, _T("否"));
+				m_ListInitPlcPara.SetItemText(n, 9, _T("否"));
 			
 			if (m_vPlcPara[n].m_bIsVisible)
-				m_ListInitPlcPara.SetItemText(n, 9, _T("是"));
+				m_ListInitPlcPara.SetItemText(n, 10, _T("是"));
 			else
-				m_ListInitPlcPara.SetItemText(n, 9, _T("否"));
-			m_ListInitPlcPara.SetItemText(n, 10, _T(m_vPlcPara[n].m_strNote));
+				m_ListInitPlcPara.SetItemText(n, 10, _T("否"));
+			m_ListInitPlcPara.SetItemText(n, 11, _T(m_vPlcPara[n].m_strNote));
 	    }
 	} 
 
 	//如果列表框选中了某行，高亮显示//
 	if (m_nItem>=0)
 	    m_ListInitPlcPara.SetItemState(m_nItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+
+	//如果地址类型下拉框为空，则填写地址类型下拉框//
+	if (((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCount() == 0)
+	{
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("I"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("IX"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("IB"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("IW"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("ID"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("Q"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QX"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QB"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QW"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("QD"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("M"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MX"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MB"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MW"));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T("MD"));
+	}
 
 	//如果生产线名称下拉框为空，则填写生产线名称到COMBO3//
 	if (!m_vLine.empty() && ((CComboBox*)GetDlgItem(IDC_COMBO3))->GetCount()==0)
@@ -308,7 +319,36 @@ void CInitPlcParaDlg::OnPaint()
 		GetDlgItem(IDC_EDIT3)->SetWindowText(_T(""));
 		break;
 	}
-	
+
+	//根据地址类型下拉框的选中条目填写读写类型下拉框//
+	if ( ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCount() == 0)
+	    switch (((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel())
+	    {
+	    case 0:
+	    case 1:
+	    case 2:
+	    case 3:
+	    case 4:
+	    case 5:
+	    case 6:
+	    case 7:
+	    case 8:
+	    case 9:
+		    ((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T("只读"));
+		    ((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
+		    break;
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T("只读"));
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T("读写"));
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
+			break;
+		default:	
+			break;
+	    }
 
 	// 不为绘图消息调用 CDialog::OnPaint()
 }
@@ -317,6 +357,7 @@ void CInitPlcParaDlg::OnPaint()
 void CInitPlcParaDlg::OnCbnSelchangeCombo1()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
 	OnPaint();
 }
 
@@ -344,7 +385,7 @@ void CInitPlcParaDlg::OnBnClickedBtAddplcpara()
 	// TODO:  在此添加控件通知处理程序代码
 	//获取当前编辑区的内容//
 	CString strAdressType, strAdressIndex, strValueType, strLine, strModule, strDevice, strPlc, strNote;
-	int nTemp = -1;
+	int nTemp = -1,nIsReadWrite = -1;
 	int nIsConfig = -1, nIsVisible = -1;
 	nTemp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 	((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(nTemp, strAdressType);
@@ -367,9 +408,10 @@ void CInitPlcParaDlg::OnBnClickedBtAddplcpara()
 
 	nIsVisible = ((CComboBox*)GetDlgItem(IDC_COMBO7))->GetCurSel();
 	nIsConfig = ((CComboBox*)GetDlgItem(IDC_COMBO8))->GetCurSel();
+	nIsReadWrite = ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCurSel();
 
 	//如果信息填写完整，则写入容器//
-	if (strAdressType.IsEmpty() || strAdressIndex.IsEmpty() || strValueType.IsEmpty() || strLine.IsEmpty() || strModule.IsEmpty() || strDevice.IsEmpty() || strPlc.IsEmpty() || strNote.IsEmpty() || nIsConfig == CB_ERR || nIsVisible == CB_ERR)
+	if (strAdressType.IsEmpty() || strAdressIndex.IsEmpty() || strValueType.IsEmpty() || strLine.IsEmpty() || strModule.IsEmpty() || strDevice.IsEmpty() || strPlc.IsEmpty() || strNote.IsEmpty() || nIsConfig == CB_ERR || nIsVisible == CB_ERR||nIsReadWrite ==CB_ERR)
 		AfxMessageBox(_T("信息不完善，无法进行添加操作！"));
 	else
 	{
@@ -383,6 +425,10 @@ void CInitPlcParaDlg::OnBnClickedBtAddplcpara()
 		m_PlcPara.m_strDevice = strDevice;
 		m_PlcPara.m_strPlc = strPlc;
 		m_PlcPara.m_strNote = strNote;
+		if (nIsReadWrite == 0)
+			m_PlcPara.m_bIsReadOnly = true;
+		else
+			m_PlcPara.m_bIsReadOnly = false;
 		if (nIsVisible == 1)
 			m_PlcPara.m_bIsVisible = false;
 		else
@@ -394,6 +440,8 @@ void CInitPlcParaDlg::OnBnClickedBtAddplcpara()
 		m_vPlcPara.push_back(m_PlcPara);//写入容器//
 		GetDlgItem(IDC_EDIT1)->SetWindowTextA(_T("")); //清空编辑区//
 		GetDlgItem(IDC_EDIT2)->SetWindowTextA(_T(""));
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->ResetContent();
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
 		((CComboBox*)GetDlgItem(IDC_COMBO3))->ResetContent();
 		((CComboBox*)GetDlgItem(IDC_COMBO5))->ResetContent();
 		((CComboBox*)GetDlgItem(IDC_COMBO6))->ResetContent();
@@ -431,6 +479,8 @@ void CInitPlcParaDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 			m_vPlcPara.erase(m_vPlcPara.begin() + index);
 			GetDlgItem(IDC_EDIT1)->SetWindowTextA(_T(""));
 			GetDlgItem(IDC_EDIT2)->SetWindowTextA(_T(""));
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
+			((CComboBox*)GetDlgItem(IDC_COMBO1))->ResetContent();
 			((CComboBox*)GetDlgItem(IDC_COMBO3))->ResetContent();
 			((CComboBox*)GetDlgItem(IDC_COMBO5))->ResetContent();
 			((CComboBox*)GetDlgItem(IDC_COMBO6))->ResetContent();
@@ -465,6 +515,40 @@ void CInitPlcParaDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	nCombo = ((CComboBox*)GetDlgItem(IDC_COMBO1))->FindStringExact(0, m_vPlcPara[m_nItem].m_strAddressType);//填写地址类型下拉框//
 	((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(nCombo);
+
+	((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();  //填写读写类型下拉框//
+	switch (nCombo)
+	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T("只读"));
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
+		break;
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+	case 14:
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T("只读"));
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T("读写"));
+		if (m_vPlcPara[m_nItem].m_bIsReadOnly)
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
+		else
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(1);
+		break;
+	default:
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
+		break;
+	}
+	
 
 	GetDlgItem(IDC_EDIT1)->SetWindowTextA(_T(m_vPlcPara[m_nItem].m_strAddressIndex));//填写地址索引编辑框//
 
@@ -521,9 +605,11 @@ void CInitPlcParaDlg::OnBnClickedBtEditplcpara()
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_nItem == -1)
 		return;
-	CString strAdressType, strAdressIndex, strValueType, strLine, strModule, strDevice, strPlc, strNote;
+	CString strAdressType, strAdressIndex, strValueType, strLine, strModule, strDevice, strPlc, strNote;//用于存储编辑区内容的临时变量//
 	int nTemp = -1;
-	int nIsConfig = -1, nIsVisible = -1;
+	int nIsConfig = -1, nIsVisible = -1,nIsReadWrite = -1;
+
+	//获取编辑区内容到临时变量//
 	nTemp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
 	((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(nTemp, strAdressType);
 
@@ -545,8 +631,10 @@ void CInitPlcParaDlg::OnBnClickedBtEditplcpara()
 
 	nIsVisible = ((CComboBox*)GetDlgItem(IDC_COMBO7))->GetCurSel();
 	nIsConfig = ((CComboBox*)GetDlgItem(IDC_COMBO8))->GetCurSel();
+	nIsReadWrite = ((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCurSel();
 
-	if (strAdressType.IsEmpty() || strAdressIndex.IsEmpty() || strValueType.IsEmpty() || strLine.IsEmpty() || strModule.IsEmpty() || strDevice.IsEmpty() || strPlc.IsEmpty() || strNote.IsEmpty() || nIsConfig == CB_ERR || nIsVisible == CB_ERR)
+	//若信息完整，则修改对应数据//
+	if (strAdressType.IsEmpty() || strAdressIndex.IsEmpty() || strValueType.IsEmpty() || strLine.IsEmpty() || strModule.IsEmpty() || strDevice.IsEmpty() || strPlc.IsEmpty() || strNote.IsEmpty() || nIsConfig == CB_ERR || nIsVisible == CB_ERR || nIsReadWrite ==CB_ERR)
 	{
 	    
 		AfxMessageBox(_T("信息不完善，无法进行该操作！"));
@@ -570,6 +658,10 @@ void CInitPlcParaDlg::OnBnClickedBtEditplcpara()
 			m_vPlcPara[m_nItem].m_bIsConfig = false;
 		else
 			m_vPlcPara[m_nItem].m_bIsConfig = true;
+		if (nIsReadWrite)
+			m_vPlcPara[m_nItem].m_bIsReadOnly = false;
+		else
+			m_vPlcPara[m_nItem].m_bIsReadOnly = true;
 	}
 
 	OnPaint();
@@ -582,13 +674,15 @@ void CInitPlcParaDlg::OnBnClickedBtCleareditarea()
 	// TODO:  在此添加控件通知处理程序代码
 	GetDlgItem(IDC_EDIT1)->SetWindowTextA(_T(""));
 	GetDlgItem(IDC_EDIT2)->SetWindowTextA(_T(""));
+	((CComboBox*)GetDlgItem(IDC_COMBO1))->ResetContent();
+	((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO3))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO5))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO6))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO4))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO7))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO8))->ResetContent();
-	m_nItem = -1;
+	m_nItem = -1; //去掉列表框某行的选中状态//
 	OnPaint();
 }
 
@@ -599,12 +693,14 @@ void CInitPlcParaDlg::OnBnClickedBtClearallpara()
 	std::vector <CPlcPara>().swap(m_vPlcPara);    //清除容器并最小化它的容量//
 	GetDlgItem(IDC_EDIT1)->SetWindowTextA(_T(""));
 	GetDlgItem(IDC_EDIT2)->SetWindowTextA(_T(""));
+	((CComboBox*)GetDlgItem(IDC_COMBO1))->ResetContent();
+	((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO3))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO5))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO6))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO4))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO7))->ResetContent();
 	((CComboBox*)GetDlgItem(IDC_COMBO8))->ResetContent();
-	m_nItem = -1;
+	m_nItem = -1;//去掉列表框某行的选中状态//
 	OnPaint();
 }

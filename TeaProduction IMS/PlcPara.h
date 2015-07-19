@@ -16,5 +16,6 @@ public:
 	bool m_bIsVisible;    //用户是否可见//
 	bool m_bIsConfig;     //是否进入配方//
 	CString m_strNote;    //备注说明//
+	bool m_bIsReadOnly;    //是否只读//
 };
 
