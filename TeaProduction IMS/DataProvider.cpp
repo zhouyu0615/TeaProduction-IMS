@@ -97,8 +97,9 @@ void CDataProvider::SaveProLineToDatabase()
 		lineId = 1000;
 	}
 	else{
-		lineId = m_vectProductionLine[length - 2].m_Id + 1;
+		lineId = m_vectProductionLine[length - 2].m_Id + 1;		
 	}
+	m_vectProductionLine[length - 1].m_Id = lineId;
 
 	strlineName = m_vectProductionLine[length - 1].m_strLineName;
 	strCapacity = m_vectProductionLine[length - 1].m_strCapacity;
@@ -151,6 +152,7 @@ void CDataProvider::SaveProModuleToDatabase()
 		Id = m_vectProcessModule[length - 2].m_Id + 1;
 	}
 
+	m_vectProcessModule[length - 1].m_Id = Id;
 
 	strLineName = m_vectProcessModule[length - 1].m_strProductionLineName;
 	strModuleName = m_vectProcessModule[length - 1].m_strProcessModuleName;
@@ -201,6 +203,7 @@ void CDataProvider::SaveDeviceToDatabase()
 	else{
 		Id = m_vectDevice[length - 2].m_Id + 1;
 	}
+	m_vectDevice[length - 1].m_Id = Id;
 
 	strLineName = m_vectDevice[length - 1].m_strProductionLineName;
 	strModuleName = m_vectDevice[length - 1].m_strProcessModuleName;
@@ -251,6 +254,7 @@ void CDataProvider::SavePlcToDatabase()
 	else{
 		Id = m_vectPlc[length - 2].m_Id + 1;
 	}
+	m_vectPlc[length - 1].m_Id = Id;
 
 	strLineName = m_vectPlc[length - 1].m_strProductionLineName;
 	strPlcName = m_vectPlc[length - 1].m_strPlcName;
@@ -305,6 +309,7 @@ void CDataProvider::SaveVideoToDatabase()
 	else{
 		Id = m_vectVideo[length - 2].m_Id + 1;
 	}
+	m_vectVideo[length - 1].m_Id = Id;
 
 	strLineName = m_vectVideo[length - 1].m_strProductionLineName;
 	strModuleName = m_vectVideo[length - 1].m_strProcessModuleName;
@@ -818,15 +823,18 @@ int CDataProvider::UpdateTableItem(enumDBTABLE dbTable, int Id)
 int CDataProvider::DeleteModule(CString ProductionLineName){
 
 	for (pModuleIter = m_vectProcessModule.begin();
-		pModuleIter != m_vectProcessModule.end();
-		pModuleIter++)
+		pModuleIter != m_vectProcessModule.end(); )
 	{
-		if (pModuleIter->m_strProcessModuleName == ProductionLineName)
+		if (pModuleIter->m_strProductionLineName == ProductionLineName)
 		{
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbProcessModule, pModuleIter->m_Id);
 			//删除内存容器里面的数据
-			m_vectProcessModule.erase(pModuleIter);
+			pModuleIter=m_vectProcessModule.erase(pModuleIter);
+		}
+		else
+		{
+			pModuleIter++;
 		}
 
 	}
@@ -838,7 +846,7 @@ int CDataProvider::DeleteDevice(CString ProductionLineName, CString ModuleName){
 
 	for (pDeviceIter = m_vectDevice.begin();
 		pDeviceIter != m_vectDevice.end();
-		pDeviceIter++)
+		)
 	{   		
 		if (pDeviceIter->m_strProductionLineName == ProductionLineName
 			&&(ModuleName.IsEmpty()||pDeviceIter->m_strProcessModuleName == ModuleName))
@@ -846,8 +854,12 @@ int CDataProvider::DeleteDevice(CString ProductionLineName, CString ModuleName){
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbDevice, pDeviceIter->m_Id);
 			//删除内存容器里面的数据
-			m_vectDevice.erase(pDeviceIter);
+			pDeviceIter=m_vectDevice.erase(pDeviceIter);
 		}
+		else{
+			pDeviceIter++;
+		}
+
 	}
 	return 0;
 
@@ -858,14 +870,18 @@ int CDataProvider::DeletePlc(CString ProductionLineName){
 
 	for (pPlcIter = m_vectPlc.begin();
 		pPlcIter != m_vectPlc.end();
-		pPlcIter++)
+		)
 	{
 		if (pPlcIter->m_strProductionLineName == ProductionLineName)
 		{
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbPLc, pPlcIter->m_Id);
 			//删除内存容器里面的数据
-			m_vectPlc.erase(pPlcIter);
+			pPlcIter=m_vectPlc.erase(pPlcIter);
+		}
+		else
+		{
+			pPlcIter++;
 		}
 
 	}
@@ -877,7 +893,7 @@ int CDataProvider::DeleteVideo(CString ProductionLineName, CString ModuleName)
 
 	for (pVideoIter = m_vectVideo.begin();
 		pVideoIter != m_vectVideo.end();
-		pVideoIter++)
+		)
 	{
 		if (pVideoIter->m_strProductionLineName == ProductionLineName
 			&&(ModuleName.IsEmpty()||pVideoIter->m_strProcessModuleName == ModuleName))
@@ -885,7 +901,11 @@ int CDataProvider::DeleteVideo(CString ProductionLineName, CString ModuleName)
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbVideo, pVideoIter->m_Id);
 			//删除内存容器里面的数据
-			m_vectVideo.erase(pVideoIter);
+			pVideoIter=m_vectVideo.erase(pVideoIter);
+		}
+		else
+		{
+			pVideoIter++;
 		}
 	}
 	return 0;
