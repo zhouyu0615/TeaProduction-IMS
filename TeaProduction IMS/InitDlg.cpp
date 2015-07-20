@@ -60,6 +60,7 @@ BEGIN_MESSAGE_MAP(InitDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_INIT, &InitDlg::OnNMClickListInit)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_INIT, &InitDlg::OnNMRClickListInit)
 	ON_BN_CLICKED(IDC_BT_EDIT, &InitDlg::OnBnClickedBtEdit)
+	ON_BN_CLICKED(IDC_BT_ADDPLCPARA, &InitDlg::OnBnClickedBtAddplcpara)
 END_MESSAGE_MAP()
 
 
@@ -72,14 +73,17 @@ void InitDlg::OnPaint()
 
 	//根据用户点击的添加按钮，加载相应设置到初始化界面//
 
-	//如果生产线下拉框为空，则填写生产线下拉框//
-	int lcombo1 = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCount();   //获得COMBO1下拉框当前共有的行数//
-	if (!m_dataPorvider.m_vectProductionLine.empty() && lcombo1 < 1)                                  //如果已经添加了生产线信息而又没有填写到下拉框，则导入//
+
+	//如果已经添加了生产线信息而又没有填写到下拉框，则导入//
+	if (!m_dataPorvider.m_vectProductionLine.empty())  {
+		((CComboBox*)GetDlgItem(IDC_COMBO1))->ResetContent();
 		for (int k = 0; k < m_dataPorvider.m_vectProductionLine.size(); k++)
 		{
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(m_dataPorvider.m_vectProductionLine[k].m_strLineName));
 			((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
 		}
+	}                                
+		
 
 	//设置列表控件风格//
 	CRect rect1;
@@ -136,7 +140,7 @@ void InitDlg::OnPaint()
 		{
 			litem.iItem = i;
 			CString str;
-			str.Format("%d", i);
+			str.Format("%d", i+1);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str));
 			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectUser[i].m_strUserName));
@@ -175,7 +179,7 @@ void InitDlg::OnPaint()
 		{
 			litem.iItem = i;
 			CString str;
-			str.Format("%d", i);
+			str.Format("%d", i+1);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
 			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectProductionLine[i].m_strLineName));
@@ -206,13 +210,16 @@ void InitDlg::OnPaint()
 		m_list_init.InsertColumn(3, _T("工艺模块名称"), LVCFMT_CENTER, rect1.Width() / 10 * 3, -1);
 		m_list_init.InsertColumn(4, _T("备注说明"), LVCFMT_CENTER, rect1.Width() / 10 * 3, -1);
 
+
+
+
 		//填写表单内容//
 		temp = m_dataPorvider.m_vectProcessModule.size();
 		for (int i = 0; i < temp; i++)
 		{
 			litem.iItem = i;
 			CString str;
-			str.Format("%d", i);
+			str.Format("%d", i+1);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
 			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectProcessModule[i].m_strProductionLineName));
@@ -236,6 +243,8 @@ void InitDlg::OnPaint()
 		GetDlgItem(IDC_STATIC4)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_EDIT4)->ShowWindow(SW_SHOW);
 
+
+
 		if (((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCount() > 0)
 		{
 			if (((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCount() > 0)    //如果COMBO2已有内容，先清空//
@@ -250,6 +259,7 @@ void InitDlg::OnPaint()
 					((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
 				}
 		}
+
 		GetDlgItem(IDC_COMBO2)->ShowWindow(SW_SHOW);
 
 		//初始化列表区//
@@ -268,7 +278,7 @@ void InitDlg::OnPaint()
 		{
 			litem.iItem = i;
 			CString str;
-			str.Format("%d", i);
+			str.Format("%d", i+1);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
 			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectDevice[i].m_strProductionLineName));
@@ -307,7 +317,7 @@ void InitDlg::OnPaint()
 		{
 			litem.iItem = i;
 			CString str;
-			str.Format("%d", i);
+			str.Format("%d", i+1);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
 			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectPlc[i].m_strProductionLineName));
@@ -363,7 +373,7 @@ void InitDlg::OnPaint()
 		{
 			litem.iItem = i;
 			CString str;
-			str.Format("%d", i);
+			str.Format("%d", i+1);
 			m_list_init.InsertItem(&litem);
 			m_list_init.SetItemText(i, 1, _T(str)); //序号
 			m_list_init.SetItemText(i, 2, _T(m_dataPorvider.m_vectVideo[i].m_strProductionLineName));
@@ -408,8 +418,6 @@ BOOL InitDlg::OnInitDialog()
 
 	m_dataPorvider.ReadUserFromDatabase();
 	m_dataPorvider.ReadProLineFromDatabase();
-
-
 
 	OnPaint();
 
@@ -619,8 +627,7 @@ void InitDlg::OnBnClickedBtInitadd()
 
 		m_dataPorvider.m_vectProductionLine.push_back(tempProLine);
 
-		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(text1));//将添加的生产线录入到COMBO1//
-		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
+
 
 
 		m_dataPorvider.SaveProLineToDatabase();
@@ -775,7 +782,21 @@ void InitDlg::OnBnClickedButton3()
 void InitDlg::OnSelchangeCombo1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	OnPaint();
+	int temp;
+	if (((CComboBox*)GetDlgItem(IDC_COMBO2))->GetCount() > 0)    //如果COMBO2已有内容，先清空//
+		((CComboBox*)GetDlgItem(IDC_COMBO2))->ResetContent();
+	temp = ((CComboBox*)GetDlgItem(IDC_COMBO1))->GetCurSel();
+	CString str1;
+	((CComboBox*)GetDlgItem(IDC_COMBO1))->GetLBText(temp, str1);//得到COMBO1当前选中条目//
+	for (int i = 0; i < m_dataPorvider.m_vectProcessModule.size(); i++)			           //对应填写COMBO2内容//
+		if (m_dataPorvider.m_vectProcessModule[i].m_strProductionLineName == str1)
+		{
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->AddString(_T(m_dataPorvider.m_vectProcessModule[i].m_strProcessModuleName));
+			((CComboBox*)GetDlgItem(IDC_COMBO2))->SetCurSel(0);
+		}
+
+
+	//OnPaint();
 }
 
 
@@ -1073,8 +1094,6 @@ void InitDlg::OnBnClickedBtEdit()
 		m_dataPorvider.UpdateTableItem(CDataProvider::tbProductionLine,
 			m_dataPorvider.m_vectProductionLine[m_nItem].m_Id);
 
-		((CComboBox*)GetDlgItem(IDC_COMBO1))->AddString(_T(text1));//将添加的生产线录入到COMBO1//
-		((CComboBox*)GetDlgItem(IDC_COMBO1))->SetCurSel(0);
 
 		break;
 	case MODULE_DATA_EDIT:
@@ -1181,4 +1200,13 @@ void InitDlg::OnBnClickedBtEdit()
 
 
 
+}
+
+
+void InitDlg::OnBnClickedBtAddplcpara()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	this->ShowWindow(SW_HIDE);
+	m_InitPlcParaDlg.DoModal();
+	this->ShowWindow(SW_SHOW);
 }

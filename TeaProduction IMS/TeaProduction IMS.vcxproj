@@ -126,6 +126,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tbDevice.h" />
     <ClInclude Include="tbPLc.h" />
+    <ClInclude Include="tbPLCSymbol.h" />
     <ClInclude Include="tbProcessModule.h" />
     <ClInclude Include="tbProductionLine.h" />
     <ClInclude Include="tbUser.h" />
@@ -152,6 +153,7 @@
     </ClCompile>
     <ClCompile Include="tbDevice.cpp" />
     <ClCompile Include="tbPLc.cpp" />
+    <ClCompile Include="tbPLCSymbol.cpp" />
     <ClCompile Include="tbProcessModule.cpp" />
     <ClCompile Include="tbProductionLine.cpp" />
     <ClCompile Include="tbUser.cpp" />

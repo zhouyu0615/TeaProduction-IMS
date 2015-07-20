@@ -9,6 +9,7 @@
 #include "DeviceClass.h"
 #include "VideoClass.h"
 #include  "DataProvider.h"
+#include "InitPlcParaDlg.h"
 
 
 
@@ -29,7 +30,7 @@ public:
 	static const int PLC_DATA_EDIT = 5;
 	static const int VIDEO_DATA_EDIT = 6;
 
-
+	CInitPlcParaDlg m_InitPlcParaDlg;
 
 // 对话框数据
 	enum { IDD = IDD_INITDLG };
@@ -58,12 +59,12 @@ public:
 
 
 	//添加用于存储用户列表、生产线列表、模块、设备、PLC、摄像头列表的容器//
-	std::vector<CString> m_vUser;     
-	std::vector<CString> m_vLine;
-	std::vector<CString> m_vModule;
-	std::vector<CString> m_vDevice;
-	std::vector<CString> m_vPlc;
-	std::vector<CString> m_vCamera;
+	//std::vector<CString> m_vUser;     
+	//std::vector<CString> m_vLine;
+	//std::vector<CString> m_vModule;
+	//std::vector<CString> m_vDevice;
+	//std::vector<CString> m_vPlc;
+	//std::vector<CString> m_vCamera;
 
    
 
@@ -83,4 +84,5 @@ public:
 	afx_msg void OnNMClickListInit(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickListInit(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedBtEdit();
+	afx_msg void OnBnClickedBtAddplcpara();
 };

@@ -7,6 +7,7 @@
 #include "tbDevice.h"
 #include "tbPLc.h"
 #include "tbVideo.h"
+#include "tbPLCSymbol.h"
 
 CDataProvider::CDataProvider()
 {
@@ -17,6 +18,20 @@ CDataProvider::CDataProvider()
 CDataProvider::~CDataProvider()
 {
 }
+
+void CDataProvider::InitDataProvider()
+{
+
+	this->ReadUserFromDatabase();
+	this->ReadProLineFromDatabase();
+	this->ReadProModuleFromDatabase();
+	this->ReadDeviceFromDatabase();
+	this->ReadPlcFromDatabase();
+	this->ReadVideoFromDatabase();
+	this->ReadPlcParaFrommDatabase();
+
+}
+
 
 void CDataProvider::SaveUserToDatabase()
 {
@@ -97,7 +112,7 @@ void CDataProvider::SaveProLineToDatabase()
 		lineId = 1000;
 	}
 	else{
-		lineId = m_vectProductionLine[length - 2].m_Id + 1;		
+		lineId = m_vectProductionLine[length - 2].m_Id + 1;
 	}
 	m_vectProductionLine[length - 1].m_Id = lineId;
 
@@ -336,6 +351,114 @@ void CDataProvider::SaveVideoToDatabase()
 }
 
 
+
+void CDataProvider::SavePlcParaToDatabase()
+{
+
+	CtbPLCSymbol tbPLCSymbol;
+	try{
+		if (tbPLCSymbol.IsOpen())
+			tbPLCSymbol.Close();
+		if (!tbPLCSymbol.Open(CRecordset::dynaset)){
+			AfxMessageBox(_T("打开数据库失败！"));
+			return;
+		}
+	}
+	catch (CDBException *e){
+		e->ReportError();
+	}
+	CString strLineName, strModuleName, strVideoName, strPort;
+
+
+	int length = m_vectPlcPara.size();
+	int Id;
+	if (length == 1)//设置第一个模块ID
+	{
+		Id = 1000;
+	}
+	else{
+		Id = m_vectPlcPara[length - 2].m_Id + 1;
+	}
+	m_vectPlcPara[length - 1].m_Id = Id;
+
+
+
+	if (tbPLCSymbol.CanUpdate()){
+		tbPLCSymbol.AddNew();
+
+		CTime time = CTime::GetCurrentTime();
+		tbPLCSymbol.m_Id = Id;
+		tbPLCSymbol.m_CreatedDateTime = time;
+		tbPLCSymbol.m_LastUpdatedDateTime = time;
+		tbPLCSymbol.m_AddressType = m_vectPlcPara[length - 1].m_strAddressType;
+		tbPLCSymbol.m_ValueType = m_vectPlcPara[length - 1].m_strValueType;
+		tbPLCSymbol.m_Value = m_vectPlcPara[length - 1].m_strValue;
+		tbPLCSymbol.m_PlcName = m_vectPlcPara[length - 1].m_strPlc;
+		tbPLCSymbol.m_ProductionLineName = m_vectPlcPara[length - 1].m_strLine;
+		tbPLCSymbol.m_ProcessModuleName = m_vectPlcPara[length - 1].m_strModule;
+		tbPLCSymbol.m_DeviceName = m_vectPlcPara[length - 1].m_strDevice;
+		tbPLCSymbol.m_IsVisible = m_vectPlcPara[length - 1].m_bIsVisible;
+		tbPLCSymbol.m_IsConfig = m_vectPlcPara[length - 1].m_bIsConfig;
+		tbPLCSymbol.m_strNote = m_vectPlcPara[length - 1].m_strNote;
+		tbPLCSymbol.m_IsReadOnly = m_vectPlcPara[length - 1].m_bIsReadOnly;
+
+		tbPLCSymbol.Update();
+	}
+
+	tbPLCSymbol.Close();
+
+}
+
+void CDataProvider::ReadPlcParaFrommDatabase()
+{
+
+	CString strsql;
+	strsql.Format(_T("select * from tbPLCSymbol order by Id"));
+
+	CtbPLCSymbol tbPlcPara;
+	try{
+		if (tbPlcPara.IsOpen())
+			tbPlcPara.Close();
+		if (!tbPlcPara.Open(CRecordset::dynaset, strsql)){
+			AfxMessageBox(_T("打开数据库失败！"));
+			return;
+		}
+	}
+	catch (CDBException *e){
+		e->ReportError();
+	}
+
+	if (tbPlcPara.IsBOF())
+	{
+		return;
+	}
+	CPlcPara tempPlcPara;
+	tbPlcPara.MoveFirst();
+	while (!tbPlcPara.IsEOF()){
+		tempPlcPara.m_Id = tbPlcPara.m_Id;
+		tempPlcPara.m_strAddressType = tbPlcPara.m_AddressType;
+		tempPlcPara.m_strValueType = tbPlcPara.m_ValueType;
+		tempPlcPara.m_strValue = tbPlcPara.m_Value;
+		tempPlcPara.m_strPlc = tbPlcPara.m_PlcName;
+		tempPlcPara.m_strLine = tbPlcPara.m_ProductionLineName;
+		tempPlcPara.m_strModule = tbPlcPara.m_ProcessModuleName;
+		tempPlcPara.m_strDevice = tbPlcPara.m_DeviceName;
+		tempPlcPara.m_bIsVisible = tbPlcPara.m_IsVisible;
+		tempPlcPara.m_bIsConfig = tbPlcPara.m_IsConfig;
+		tempPlcPara.m_strNote = tbPlcPara.m_strNote;
+		tempPlcPara.m_bIsReadOnly = tbPlcPara.m_IsReadOnly;
+
+		m_vectPlcPara.push_back(tempPlcPara);
+
+
+		tbPlcPara.MoveNext();
+
+	}
+
+	tbPlcPara.Close();
+
+
+}
 
 
 void CDataProvider::ReadUserFromDatabase(){
@@ -796,6 +919,29 @@ int CDataProvider::UpdateTableItem(enumDBTABLE dbTable, int Id)
 			tempVideo.m_strVideoName, tempVideo.m_strPort, Id);
 		break;
 	case CDataProvider::tbPLCSymbol:
+		for (int i = 0; i < m_vectPlcPara.size(); i++)
+		{
+			if (Id == m_vectPlcPara[i].m_Id)
+			{
+				tempPlcPara = m_vectPlcPara[i];
+				break;
+			}
+
+		}
+		strsql.Format("UPDATE tbPLCSymbol SET AddressType='%s' ,AddressIndex='s',Value=s',ProductionLineName='%s',ProcessModuleName='%s',DeviceName='%s',PlcName='%s',ValueType='%s',strNote='%s',IsVisible='%d',IsConfig='%d',IsReadOnly='%d' WHERE Id = '%d'"
+			, tempPlcPara.m_strAddressType,
+			tempPlcPara.m_strAddressIndex,
+			tempPlcPara.m_strValue,
+			tempPlcPara.m_strLine,
+			tempPlcPara.m_strModule,
+			tempPlcPara.m_strDevice,
+			tempPlcPara.m_strPlc,
+			tempPlcPara.m_strValueType,
+			tempPlcPara.m_strNote,
+			(int)tempPlcPara.m_bIsVisible,
+			(int)tempPlcPara.m_bIsConfig,
+			(int)tempPlcPara.m_bIsReadOnly,
+			Id);
 
 		break;
 	default:
@@ -823,14 +969,14 @@ int CDataProvider::UpdateTableItem(enumDBTABLE dbTable, int Id)
 int CDataProvider::DeleteModule(CString ProductionLineName){
 
 	for (pModuleIter = m_vectProcessModule.begin();
-		pModuleIter != m_vectProcessModule.end(); )
+		pModuleIter != m_vectProcessModule.end();)
 	{
 		if (pModuleIter->m_strProductionLineName == ProductionLineName)
 		{
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbProcessModule, pModuleIter->m_Id);
 			//删除内存容器里面的数据
-			pModuleIter=m_vectProcessModule.erase(pModuleIter);
+			pModuleIter = m_vectProcessModule.erase(pModuleIter);
 		}
 		else
 		{
@@ -847,14 +993,14 @@ int CDataProvider::DeleteDevice(CString ProductionLineName, CString ModuleName){
 	for (pDeviceIter = m_vectDevice.begin();
 		pDeviceIter != m_vectDevice.end();
 		)
-	{   		
+	{
 		if (pDeviceIter->m_strProductionLineName == ProductionLineName
-			&&(ModuleName.IsEmpty()||pDeviceIter->m_strProcessModuleName == ModuleName))
+			&& (ModuleName.IsEmpty() || pDeviceIter->m_strProcessModuleName == ModuleName))
 		{
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbDevice, pDeviceIter->m_Id);
 			//删除内存容器里面的数据
-			pDeviceIter=m_vectDevice.erase(pDeviceIter);
+			pDeviceIter = m_vectDevice.erase(pDeviceIter);
 		}
 		else{
 			pDeviceIter++;
@@ -877,7 +1023,7 @@ int CDataProvider::DeletePlc(CString ProductionLineName){
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbPLc, pPlcIter->m_Id);
 			//删除内存容器里面的数据
-			pPlcIter=m_vectPlc.erase(pPlcIter);
+			pPlcIter = m_vectPlc.erase(pPlcIter);
 		}
 		else
 		{
@@ -896,12 +1042,12 @@ int CDataProvider::DeleteVideo(CString ProductionLineName, CString ModuleName)
 		)
 	{
 		if (pVideoIter->m_strProductionLineName == ProductionLineName
-			&&(ModuleName.IsEmpty()||pVideoIter->m_strProcessModuleName == ModuleName))
+			&& (ModuleName.IsEmpty() || pVideoIter->m_strProcessModuleName == ModuleName))
 		{
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbVideo, pVideoIter->m_Id);
 			//删除内存容器里面的数据
-			pVideoIter=m_vectVideo.erase(pVideoIter);
+			pVideoIter = m_vectVideo.erase(pVideoIter);
 		}
 		else
 		{
@@ -911,4 +1057,26 @@ int CDataProvider::DeleteVideo(CString ProductionLineName, CString ModuleName)
 	return 0;
 }
 
+int CDataProvider::DeletePlcPara(CString ProductionLineName, CString PlcName)
+{
+	for (pPlcParaIter = m_vectPlcPara.begin();
+		pPlcParaIter != m_vectPlcPara.end();
+		)
+	{
+		if (pPlcParaIter->m_strLine == ProductionLineName
+			&& (PlcName.IsEmpty() || pPlcParaIter->m_strModule==PlcName))
+		{
+			//删除数据库里面的数据
+			DeleteDbTableItem(CDataProvider::tbPLCSymbol, pPlcParaIter->m_Id);
+			//删除内存容器里面的数据
+			pPlcParaIter = m_vectPlcPara.erase(pPlcParaIter);
+		}
+		else
+		{
+			pPlcParaIter++;
+		}
+	}
+	return 0;
+
+}
 

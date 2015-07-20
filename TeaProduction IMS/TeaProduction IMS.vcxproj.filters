@@ -112,6 +112,9 @@
     <ClInclude Include="DataProvider.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="tbPLCSymbol.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TeaProduction IMS.cpp">
@@ -175,6 +178,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DataProvider.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tbPLCSymbol.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -35,6 +35,7 @@ public:
 	std::vector<DeviceClass>::iterator        pDeviceIter;
 	std::vector<PlcClass>::iterator            pPlcIter;
 	std::vector<VideoClass>::iterator		pVideoIter;
+	std::vector<CPlcPara>::iterator        pPlcParaIter;
 
 	void SaveUserToDatabase();
 	void ReadUserFromDatabase();
@@ -54,6 +55,9 @@ public:
 	void SavePlcParaToDatabase();
 	void ReadPlcParaFrommDatabase();
 
+
+	void  InitDataProvider();
+
 	int DeleteDbTable(enumDBTABLE dbTable);
 	int DeleteDbTableItem(enumDBTABLE dbTable, int Id);
 
@@ -66,5 +70,7 @@ public:
 	int DeleteDevice(CString ProductionLineName, CString ModuleName="");
 	int DeletePlc(CString ProductionLineName);
 	int DeleteVideo(CString ProductionLineName, CString ModuleName="");
+	int DeletePlcPara(CString ProductionLineName, CString PlcName="");
+
 };
 

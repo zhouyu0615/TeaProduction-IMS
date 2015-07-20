@@ -209,12 +209,14 @@ void LoginDlg::OnBnClickedOk()
 //将初始化界面设置的参数传递到主界面对话框类//
 void LoginDlg::cmGetInitPara()
 {
-   m_maindlg.m_vUser = m_initdlg.m_vUser;
+ /*  
+    m_maindlg.m_vUser = m_initdlg.m_vUser;
    m_maindlg.m_vLine = m_initdlg.m_vLine;
    m_maindlg.m_vModule = m_initdlg.m_vModule;
    m_maindlg.m_vPlc = m_initdlg.m_vPlc;
    m_maindlg.m_vDevice = m_initdlg.m_vDevice;
    m_maindlg.m_vCamera = m_initdlg.m_vCamera;
+*/
 }
 
 LRESULT LoginDlg::PopInitDlg(WPARAM wParam, LPARAM lParam)  //“弹出初始化对话框”的消息响应函数//
