@@ -173,6 +173,12 @@ void CDataProvider::SaveProModuleToDatabase()
 	strModuleName = m_vectProcessModule[length - 1].m_strProcessModuleName;
 	strDescription = m_vectProcessModule[length - 1].m_strDescription;
 
+	int ProLineId;
+	for (int i = 0; i < m_vectProductionLine.size();i++)
+	{
+
+	}
+
 	if (tbProcessModule.CanUpdate()){
 		tbProcessModule.AddNew();
 
@@ -370,12 +376,12 @@ void CDataProvider::SaveAllPlcParaToDatabase()
 
 
 
-	int Id=1000;
+	int Id = 1000;
 	int length = m_vectPlcPara.size();
 
-	for (int i = 0; i < length;i++)
+	for (int i = 0; i < length; i++)
 	{
-		   m_vectPlcPara[i].m_Id = 1000+i;
+		m_vectPlcPara[i].m_Id = 1000 + i;
 
 		if (tbPLCSymbol.CanUpdate()){
 			tbPLCSymbol.AddNew();
@@ -401,7 +407,7 @@ void CDataProvider::SaveAllPlcParaToDatabase()
 
 	}
 
-	
+
 
 	tbPLCSymbol.Close();
 
@@ -1062,7 +1068,7 @@ int CDataProvider::DeletePlcPara(CString ProductionLineName, CString PlcName)
 		)
 	{
 		if (pPlcParaIter->m_strLine == ProductionLineName
-			&& (PlcName.IsEmpty() || pPlcParaIter->m_strModule==PlcName))
+			&& (PlcName.IsEmpty() || pPlcParaIter->m_strModule == PlcName))
 		{
 			//删除数据库里面的数据
 			DeleteDbTableItem(CDataProvider::tbPLCSymbol, pPlcParaIter->m_Id);
@@ -1076,5 +1082,58 @@ int CDataProvider::DeletePlcPara(CString ProductionLineName, CString PlcName)
 	}
 	return 0;
 
+}
+
+
+
+/*  根据传入的参数 ProductionLineName ModuleName，
+   从m_vectDevice容器中找出相关的Device
+   存储到成员变量 m_vTempDevice中
+
+   */
+int CDataProvider::SearchDevice(CString ProductionLineName, CString ModuleName)
+{
+	m_vTempDevice.clear();
+	for (pDeviceIter = m_vectDevice.begin(); pDeviceIter != m_vectDevice.end(); pDeviceIter++)
+	{
+		if (pDeviceIter->m_strProductionLineName==ProductionLineName
+			&&pDeviceIter->m_strProcessModuleName==ModuleName)
+		{
+			m_vTempDevice.push_back(*pDeviceIter);
+		}
+
+	}
+	return 0;
+}
+
+
+int CDataProvider::SearchPlcPara(CString ProductionLineName, CString ModuleName)
+{
+	m_vTempPlcPara.clear();
+	for (pPlcParaIter = m_vectPlcPara.begin(); pPlcParaIter != m_vectPlcPara.end(); pPlcParaIter++)
+	{
+		if (pPlcParaIter->m_strLine == ProductionLineName
+			&&pPlcParaIter->m_strModule == ModuleName)
+		{
+			m_vTempPlcPara.push_back(*pPlcParaIter);
+		}
+
+	}
+	return 0;
+}
+
+
+int CDataProvider::SearchVideo(CString ProductionLineName, CString ModuleName)
+{
+	m_vTempVideo.clear();
+	for (pVideoIter = m_vectVideo.begin(); pVideoIter != m_vectVideo.end(); pVideoIter++)
+	{
+		if (pVideoIter->m_strProductionLineName == ProductionLineName
+			&&pVideoIter->m_strProcessModuleName == ModuleName)
+		{
+			m_vTempVideo.push_back(*pVideoIter);
+		}
+	}
+	return 0;
 }
 

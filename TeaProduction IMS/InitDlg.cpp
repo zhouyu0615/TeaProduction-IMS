@@ -1090,7 +1090,7 @@ void InitDlg::OnBnClickedBtEdit()
 		m_dataPorvider.m_vectProductionLine[m_nItem].m_strLineName = text1;
 		m_dataPorvider.m_vectProductionLine[m_nItem].m_strCapacity = text2;
 		m_dataPorvider.m_vectProductionLine[m_nItem].m_strDescription = text3;
-
+		 
 		m_dataPorvider.UpdateTableItem(CDataProvider::tbProductionLine,
 			m_dataPorvider.m_vectProductionLine[m_nItem].m_Id);
 

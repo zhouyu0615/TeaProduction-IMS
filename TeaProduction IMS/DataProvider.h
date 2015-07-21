@@ -37,6 +37,9 @@ public:
 	std::vector<VideoClass>::iterator		pVideoIter;
 	std::vector<CPlcPara>::iterator        pPlcParaIter;
 
+
+
+
 	void SaveUserToDatabase();
 	void ReadUserFromDatabase();
 	void SaveProLineToDatabase();
@@ -72,5 +75,15 @@ public:
 	int DeleteVideo(CString ProductionLineName, CString ModuleName="");
 	int DeletePlcPara(CString ProductionLineName, CString PlcName="");
 
-};
 
+
+	//作为Search Device,PlcPara,Video 方法临时存储的中间容器
+	std::vector<DeviceClass> m_vTempDevice;
+	std::vector<CPlcPara>  m_vTempPlcPara;
+	std::vector<VideoClass> m_vTempVideo;
+
+	int SearchDevice(CString ProductionLineName, CString ModuleName);
+	int SearchPlcPara(CString ProductionLineName, CString ModuleName);
+	int SearchVideo(CString ProducitonLinaName, CString ModuleName);
+
+};
