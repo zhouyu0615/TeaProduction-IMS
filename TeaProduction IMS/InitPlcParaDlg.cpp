@@ -5,6 +5,7 @@
 #include "TeaProduction IMS.h"
 #include "InitPlcParaDlg.h"
 #include "afxdialogex.h"
+#include "DataProvider.h"
 
 
 
@@ -92,6 +93,12 @@ CInitPlcParaDlg::CInitPlcParaDlg(CWnd* pParent /*=NULL*/)
 	plcpara.m_strNote = _T("启动停止信号");
 	plcpara.m_bIsReadOnly = true;
 	m_vPlcPara.push_back(plcpara);
+
+
+
+	m_dataProvider.ReadPlcParaFrommDatabase();
+
+	m_vPlcPara.push_back(m_dataProvider.m_vectPlcPara[0]);
 
 }
 
@@ -725,4 +732,9 @@ void CInitPlcParaDlg::OnBnClickedCancel()
 void CInitPlcParaDlg::OnBnClickedBtSaveall()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	m_dataProvider.DeleteDbTable(CDataProvider::tbPLCSymbol);
+
+	m_dataProvider.SaveAllPlcParaToDatabase();
+
+
 }

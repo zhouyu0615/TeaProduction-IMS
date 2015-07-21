@@ -352,7 +352,7 @@ void CDataProvider::SaveVideoToDatabase()
 
 
 
-void CDataProvider::SavePlcParaToDatabase()
+void CDataProvider::SaveAllPlcParaToDatabase()
 {
 
 	CtbPLCSymbol tbPLCSymbol;
@@ -367,43 +367,41 @@ void CDataProvider::SavePlcParaToDatabase()
 	catch (CDBException *e){
 		e->ReportError();
 	}
-	CString strLineName, strModuleName, strVideoName, strPort;
 
 
+
+	int Id=1000;
 	int length = m_vectPlcPara.size();
-	int Id;
-	if (length == 1)//设置第一个模块ID
+
+	for (int i = 0; i < length;i++)
 	{
-		Id = 1000;
+		   m_vectPlcPara[i].m_Id = 1000+i;
+
+		if (tbPLCSymbol.CanUpdate()){
+			tbPLCSymbol.AddNew();
+
+			CTime time = CTime::GetCurrentTime();
+			tbPLCSymbol.m_Id = m_vectPlcPara[i].m_Id;
+			tbPLCSymbol.m_CreatedDateTime = time;
+			tbPLCSymbol.m_LastUpdatedDateTime = time;
+			tbPLCSymbol.m_AddressType = m_vectPlcPara[i].m_strAddressType;
+			tbPLCSymbol.m_ValueType = m_vectPlcPara[i].m_strValueType;
+			tbPLCSymbol.m_Value = m_vectPlcPara[i].m_strValue;
+			tbPLCSymbol.m_PlcName = m_vectPlcPara[i].m_strPlc;
+			tbPLCSymbol.m_ProductionLineName = m_vectPlcPara[i].m_strLine;
+			tbPLCSymbol.m_ProcessModuleName = m_vectPlcPara[i].m_strModule;
+			tbPLCSymbol.m_DeviceName = m_vectPlcPara[i].m_strDevice;
+			tbPLCSymbol.m_IsVisible = m_vectPlcPara[i].m_bIsVisible;
+			tbPLCSymbol.m_IsConfig = m_vectPlcPara[i].m_bIsConfig;
+			tbPLCSymbol.m_strNote = m_vectPlcPara[i].m_strNote;
+			tbPLCSymbol.m_IsReadOnly = m_vectPlcPara[i].m_bIsReadOnly;
+
+			tbPLCSymbol.Update();
+		}
+
 	}
-	else{
-		Id = m_vectPlcPara[length - 2].m_Id + 1;
-	}
-	m_vectPlcPara[length - 1].m_Id = Id;
 
-
-
-	if (tbPLCSymbol.CanUpdate()){
-		tbPLCSymbol.AddNew();
-
-		CTime time = CTime::GetCurrentTime();
-		tbPLCSymbol.m_Id = Id;
-		tbPLCSymbol.m_CreatedDateTime = time;
-		tbPLCSymbol.m_LastUpdatedDateTime = time;
-		tbPLCSymbol.m_AddressType = m_vectPlcPara[length - 1].m_strAddressType;
-		tbPLCSymbol.m_ValueType = m_vectPlcPara[length - 1].m_strValueType;
-		tbPLCSymbol.m_Value = m_vectPlcPara[length - 1].m_strValue;
-		tbPLCSymbol.m_PlcName = m_vectPlcPara[length - 1].m_strPlc;
-		tbPLCSymbol.m_ProductionLineName = m_vectPlcPara[length - 1].m_strLine;
-		tbPLCSymbol.m_ProcessModuleName = m_vectPlcPara[length - 1].m_strModule;
-		tbPLCSymbol.m_DeviceName = m_vectPlcPara[length - 1].m_strDevice;
-		tbPLCSymbol.m_IsVisible = m_vectPlcPara[length - 1].m_bIsVisible;
-		tbPLCSymbol.m_IsConfig = m_vectPlcPara[length - 1].m_bIsConfig;
-		tbPLCSymbol.m_strNote = m_vectPlcPara[length - 1].m_strNote;
-		tbPLCSymbol.m_IsReadOnly = m_vectPlcPara[length - 1].m_bIsReadOnly;
-
-		tbPLCSymbol.Update();
-	}
+	
 
 	tbPLCSymbol.Close();
 

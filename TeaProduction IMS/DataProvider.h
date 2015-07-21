@@ -52,7 +52,7 @@ public:
 	void SaveVideoToDatabase();
 
 
-	void SavePlcParaToDatabase();
+	void SaveAllPlcParaToDatabase();
 	void ReadPlcParaFrommDatabase();
 
 
