@@ -4,7 +4,7 @@
 
 // CtbPLCSymbol 实现
 
-// 代码生成在 2015年7月20日 星期一, 11:05
+// 代码生成在 2015年7月21日 星期二, 15:48
 
 #include "stdafx.h"
 #include "tbPLCSymbol.h"
@@ -31,7 +31,8 @@ CtbPLCSymbol::CtbPLCSymbol(CDatabase* pdb)
 	m_ValueType = "";
 	m_strNote = "";
 	m_IsReadOnly = FALSE;
-	m_nFields = 18;
+	m_ProductionLineId = 0;
+	m_nFields = 19;
 	m_nDefaultType = dynaset;
 }
 //#error 安全问题：连接字符串可能包含密码。
@@ -73,6 +74,7 @@ void CtbPLCSymbol::DoFieldExchange(CFieldExchange* pFX)
 	RFX_Text(pFX, _T("[ValueType]"), m_ValueType);
 	RFX_Text(pFX, _T("[strNote]"), m_strNote);
 	RFX_Bool(pFX, _T("[IsReadOnly]"), m_IsReadOnly);
+	RFX_Long(pFX, _T("[ProductionLineId]"), m_ProductionLineId);
 
 }
 /////////////////////////////////////////////////////////////////////////////

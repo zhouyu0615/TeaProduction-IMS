@@ -33,6 +33,70 @@ void CDataProvider::InitDataProvider()
 }
 
 
+
+int CDataProvider::FindProLineId(CString ProducitonLineName)
+{
+	int ProLineId;
+	for (int i = 0; i < m_vectProductionLine.size(); i++)
+	{
+		if (ProducitonLineName == m_vectProductionLine[i].m_strLineName)
+		{
+			ProLineId = m_vectProductionLine[i].m_Id;
+			return ProLineId;
+		}
+	}
+	return 0;
+}
+
+
+int CDataProvider::FindProModuleId(CString ProductionLineName, CString ModuleName)
+{
+	int ProModuleId;
+	for (int i = 0; i < m_vectProcessModule.size(); i++)
+	{
+		if (ProductionLineName == m_vectProcessModule[i].m_strProcessModuleName
+			&&ModuleName == m_vectProcessModule[i].m_strProductionLineName)
+		{
+			ProModuleId = m_vectProcessModule[i].m_Id;
+			return ProModuleId;
+		}
+	}
+	return 0;
+}
+
+
+int CDataProvider::FindPlcId(CString PlcName)
+{
+	int PlcId;
+	for (int i = 0; i < m_vectPlc.size();i++)
+	{
+		if (PlcName==m_vectPlc[i].m_strPlcName)
+		{
+			PlcId = m_vectPlc[i].m_Id;
+			return PlcId;
+		}
+	}
+	return 0;
+
+}
+
+int CDataProvider::FindDeviceId(CString ProductionLineName, CString ModuleName, CString DeviceName)
+{
+	int DeviceId;
+	for (int i = 0; i < m_vectDevice.size();i++)
+	{
+		if (ProductionLineName==m_vectDevice[i].m_strProductionLineName
+			&&ModuleName==m_vectDevice[i].m_strProcessModuleName
+			&&DeviceName==m_vectDevice[i].m_strDeviceName)
+		{
+			DeviceId = m_vectDevice[i].m_Id;
+			return DeviceId;
+		}
+	}
+
+	return 0;
+}
+
 void CDataProvider::SaveUserToDatabase()
 {
 	CtbUser m_tbUserSet;
@@ -172,13 +236,11 @@ void CDataProvider::SaveProModuleToDatabase()
 	strLineName = m_vectProcessModule[length - 1].m_strProductionLineName;
 	strModuleName = m_vectProcessModule[length - 1].m_strProcessModuleName;
 	strDescription = m_vectProcessModule[length - 1].m_strDescription;
-
-	int ProLineId;
-	for (int i = 0; i < m_vectProductionLine.size();i++)
-	{
-
-	}
-
+	
+	//找出工艺模块所属生产线的ID
+	int ProLineId = FindProLineId(strLineName);
+	m_vectProcessModule[length - 1].m_ProcessLineId = ProLineId;
+	
 	if (tbProcessModule.CanUpdate()){
 		tbProcessModule.AddNew();
 
@@ -188,6 +250,7 @@ void CDataProvider::SaveProModuleToDatabase()
 		tbProcessModule.m_LastUpdatedDateTime = time;
 		tbProcessModule.m_ProductionLineName = strLineName;
 		tbProcessModule.m_UserId = m_userId; //唯一用户ID
+		tbProcessModule.m_ProductionLineId = ProLineId; //所属生产线ID
 		tbProcessModule.m_ModuleName = strModuleName;
 		tbProcessModule.m_Description = strDescription;
 		tbProcessModule.Update();
@@ -231,6 +294,15 @@ void CDataProvider::SaveDeviceToDatabase()
 	strDeviceName = m_vectDevice[length - 1].m_strDeviceName;
 	strDeviceType = m_vectDevice[length - 1].m_strDeviceType;
 
+	int ProLineId, ProModuleId;
+	//找到该设备所属生产线的ID
+	ProLineId = FindProLineId(strLineName);
+	//找到设备所属的工艺模块的ID
+	ProModuleId == FindProModuleId(strLineName, strModuleName);
+
+	m_vectDevice[length - 1].m_ProductionLineId = ProLineId;
+	m_vectDevice[length - 1].m_ProcessModuleId = ProModuleId;
+
 	if (tbDevice.CanUpdate()){
 		tbDevice.AddNew();
 
@@ -242,6 +314,9 @@ void CDataProvider::SaveDeviceToDatabase()
 		tbDevice.m_ProcessModuleName = strModuleName;
 		tbDevice.m_DeviceName = strDeviceName;
 		tbDevice.m_DeviceType = strDeviceType;
+		tbDevice.m_ProductionLineId = ProLineId; //所属生产线的ID
+		tbDevice.m_ProcessModuleId = ProModuleId;// 所属工艺模块的ID
+
 		tbDevice.Update();
 
 	}
@@ -281,6 +356,9 @@ void CDataProvider::SavePlcToDatabase()
 	strPlcName = m_vectPlc[length - 1].m_strPlcName;
 	strPort = m_vectPlc[length - 1].m_strPort;
 	strDescription = m_vectPlc[length - 1].m_strDescription;
+
+	int ProlineId = FindProLineId(strLineName); //找出PLC所属生产线的ID
+	m_vectPlc[length - 1].m_ProductionLineId = ProlineId;
 
 	if (tbPlc.CanUpdate()){
 		tbPlc.AddNew();
@@ -337,6 +415,13 @@ void CDataProvider::SaveVideoToDatabase()
 	strVideoName = m_vectVideo[length - 1].m_strVideoName;
 	strPort = m_vectVideo[length - 1].m_strPort;
 
+	int ProLineId, ModuleId;
+	ProLineId = FindProLineId(strLineName);
+	ModuleId = FindProModuleId(strLineName, strModuleName);
+
+	m_vectVideo[length - 1].m_ProductionLineId = ProLineId;
+	m_vectVideo[length - 1].m_ModuleId = ModuleId;
+
 	if (tbVideo.CanUpdate()){
 		tbVideo.AddNew();
 
@@ -348,6 +433,9 @@ void CDataProvider::SaveVideoToDatabase()
 		tbVideo.m_ProcessModuleName = strModuleName;
 		tbVideo.m_VideoName = strVideoName;
 		tbVideo.m_strPort = strPort;
+
+		tbVideo.m_ProductionLineId = ProLineId;
+		tbVideo.m_ProcessModuleId = ModuleId;
 		tbVideo.Update();
 
 	}
@@ -378,19 +466,33 @@ void CDataProvider::SaveAllPlcParaToDatabase()
 
 	int Id = 1000;
 	int length = m_vectPlcPara.size();
+	int ProLineId, ModuleId, DeviceId, PlcId;
 
 	for (int i = 0; i < length; i++)
 	{
 		m_vectPlcPara[i].m_Id = 1000 + i;
 
+		ProLineId = FindProLineId(m_vectPlcPara[i].m_strLine);
+		ModuleId = FindProModuleId(m_vectPlcPara[i].m_strLine, m_vectPlcPara[i].m_strModule);
+		DeviceId = FindDeviceId(m_vectPlcPara[i].m_strLine,
+								m_vectPlcPara[i].m_strModule,
+								m_vectPlcPara[i].m_strDevice);
+		PlcId = FindPlcId(m_vectPlcPara[i].m_strPlc);
+
+		m_vectPlcPara[i].m_ProLineId = ProLineId;
+		m_vectPlcPara[i].m_ModuleId = ModuleId;
+		m_vectPlcPara[i].m_PlcId = PlcId;
+		m_vectPlcPara[i].m_DeviceId = DeviceId;
+
 		if (tbPLCSymbol.CanUpdate()){
 			tbPLCSymbol.AddNew();
-
+			
 			CTime time = CTime::GetCurrentTime();
 			tbPLCSymbol.m_Id = m_vectPlcPara[i].m_Id;
 			tbPLCSymbol.m_CreatedDateTime = time;
 			tbPLCSymbol.m_LastUpdatedDateTime = time;
 			tbPLCSymbol.m_AddressType = m_vectPlcPara[i].m_strAddressType;
+			tbPLCSymbol.m_AddressIndex = m_vectPlcPara[i].m_strAddressIndex;
 			tbPLCSymbol.m_ValueType = m_vectPlcPara[i].m_strValueType;
 			tbPLCSymbol.m_Value = m_vectPlcPara[i].m_strValue;
 			tbPLCSymbol.m_PlcName = m_vectPlcPara[i].m_strPlc;
@@ -401,6 +503,11 @@ void CDataProvider::SaveAllPlcParaToDatabase()
 			tbPLCSymbol.m_IsConfig = m_vectPlcPara[i].m_bIsConfig;
 			tbPLCSymbol.m_strNote = m_vectPlcPara[i].m_strNote;
 			tbPLCSymbol.m_IsReadOnly = m_vectPlcPara[i].m_bIsReadOnly;
+
+			tbPLCSymbol.m_ProductionLineId = m_vectPlcPara[i].m_ProLineId;
+			tbPLCSymbol.m_ProcessModuleId = m_vectPlcPara[i].m_ModuleId;
+			tbPLCSymbol.m_PLCId = m_vectPlcPara[i].m_PlcId;
+			tbPLCSymbol.m_DeviceId = m_vectPlcPara[i].m_DeviceId;
 
 			tbPLCSymbol.Update();
 		}
@@ -441,6 +548,8 @@ void CDataProvider::ReadPlcParaFrommDatabase()
 	while (!tbPlcPara.IsEOF()){
 		tempPlcPara.m_Id = tbPlcPara.m_Id;
 		tempPlcPara.m_strAddressType = tbPlcPara.m_AddressType;
+		tempPlcPara.m_strAddressIndex = tbPlcPara.m_AddressIndex;
+
 		tempPlcPara.m_strValueType = tbPlcPara.m_ValueType;
 		tempPlcPara.m_strValue = tbPlcPara.m_Value;
 		tempPlcPara.m_strPlc = tbPlcPara.m_PlcName;
@@ -451,6 +560,11 @@ void CDataProvider::ReadPlcParaFrommDatabase()
 		tempPlcPara.m_bIsConfig = tbPlcPara.m_IsConfig;
 		tempPlcPara.m_strNote = tbPlcPara.m_strNote;
 		tempPlcPara.m_bIsReadOnly = tbPlcPara.m_IsReadOnly;
+
+		tempPlcPara.m_ProLineId = tbPlcPara.m_ProductionLineId;
+		tempPlcPara.m_ModuleId = tbPlcPara.m_ProcessModuleId;
+		tempPlcPara.m_PlcId = tbPlcPara.m_PLCId;
+		tempPlcPara.m_DeviceId = tbPlcPara.m_DeviceId;
 
 		m_vectPlcPara.push_back(tempPlcPara);
 
@@ -539,6 +653,8 @@ void CDataProvider::ReadProLineFromDatabase(){
 		tempProductionLine.m_strCapacity = tbProductionLine.m_Capacity;
 		tempProductionLine.m_strDescription = tbProductionLine.m_Description;
 
+		tempProductionLine.m_UserId = tbProductionLine.m_UserId;
+
 		m_vectProductionLine.push_back(tempProductionLine);
 		tbProductionLine.MoveNext();
 	}
@@ -581,6 +697,8 @@ void CDataProvider::ReadProModuleFromDatabase()
 		tempModule.m_strProcessModuleName = tbProcessModule.m_ModuleName;
 		tempModule.m_strDescription = tbProcessModule.m_Description;
 
+		tempModule.m_ProcessLineId = tbProcessModule.m_ProductionLineId;
+
 		m_vectProcessModule.push_back(tempModule);
 		tbProcessModule.MoveNext();
 	}
@@ -622,6 +740,8 @@ void CDataProvider::ReadDeviceFromDatabase()
 		tempDevice.m_strProcessModuleName = tbDevice.m_ProcessModuleName;
 		tempDevice.m_strDeviceName = tbDevice.m_DeviceName;
 		tempDevice.m_strDeviceType = tbDevice.m_DeviceType;
+		tempDevice.m_ProcessModuleId = tbDevice.m_ProcessModuleId;
+		tempDevice.m_ProductionLineId = tbDevice.m_ProductionLineId;
 
 		m_vectDevice.push_back(tempDevice);
 		tbDevice.MoveNext();
@@ -667,6 +787,7 @@ void CDataProvider::ReadPlcFromDatabase()
 		tempPlc.m_strPlcName = tbPlc.m_PLCName;
 		tempPlc.m_strPort = tbPlc.m_strPort;
 		tempPlc.m_strDescription = tbPlc.m_Description;
+		tempPlc.m_ProductionLineId = tbPlc.m_ProductionLineId;
 
 		m_vectPlc.push_back(tempPlc);
 		tbPlc.MoveNext();
@@ -713,6 +834,9 @@ void CDataProvider::ReadVideoFromDatabase()
 		tempVideo.m_strProcessModuleName = tbVideo.m_ProcessModuleName;
 		tempVideo.m_strPort = tbVideo.m_strPort;
 		tempVideo.m_strVideoName = tbVideo.m_VideoName;
+
+		tempVideo.m_ProductionLineId = tbVideo.m_ProductionLineId;
+		tempVideo.m_ModuleId = tbVideo.m_ProcessModuleId;
 
 		m_vectVideo.push_back(tempVideo);
 		tbVideo.MoveNext();

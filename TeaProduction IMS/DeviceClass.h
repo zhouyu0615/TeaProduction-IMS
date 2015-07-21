@@ -10,6 +10,7 @@ public:
 	CString m_strProductionLineName;
 	CString m_strProcessModuleName;
 	CString m_strDeviceType;
+	int m_ProductionLineId;
 //	CString m_strModuleName;
 };
 

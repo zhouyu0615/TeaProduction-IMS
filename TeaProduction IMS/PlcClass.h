@@ -8,6 +8,8 @@ public:
 	CString m_strPlcName;
 	CString m_strDescription;
 	CString m_strProductionLineName;
+	int m_ProductionLineId;
+
 //	CString Port;
 	CString m_strPort;
 };

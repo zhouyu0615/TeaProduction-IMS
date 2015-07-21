@@ -2,7 +2,7 @@
 
 #pragma once
 
-// 代码生成在 2015年7月20日 星期一, 11:05
+// 代码生成在 2015年7月21日 星期二, 15:48
 
 class CtbPLCSymbol : public CRecordset
 {
@@ -38,6 +38,7 @@ public:
 	CStringA	m_ValueType;
 	CStringA	m_strNote;
 	BOOL	m_IsReadOnly;
+	long	m_ProductionLineId;
 
 // 重写
 	// 向导生成的虚函数重写
